@@ -6,9 +6,12 @@ using static UnityEngine.EventSystems.StandaloneInputModule;
 public class PlayerController : MonoBehaviour
 {
     public int moveSpeed = 10;
-    public float collisionOffset = 0.05f;
+	[SerializeField]
+	float collisionOffset = 0.05f;
 
-    public ContactFilter2D movementFilter;
+
+	[SerializeField]
+	ContactFilter2D movementFilter;
 
     public Vector2 currentVelocity = Vector2.zero;
     public Vector2 currentInputMoveVector= Vector2.zero;
@@ -51,6 +54,7 @@ public class PlayerController : MonoBehaviour
 
         //Actually move the RB
         Vector2 moveVectorFinal = moveVector * moveSpeed * Time.fixedDeltaTime;
+
 		rb.MovePosition(rb.position + moveVectorFinal);
 
         currentVelocity = moveVectorFinal;

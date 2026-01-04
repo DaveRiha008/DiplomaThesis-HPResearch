@@ -422,6 +422,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 4
   collisionOffset: 0.05
+  moveTweenDuration: 0.01
   movementFilter:
     useTriggers: 0
     useLayerMask: 0
