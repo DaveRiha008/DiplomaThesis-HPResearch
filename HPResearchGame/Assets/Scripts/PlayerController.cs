@@ -10,6 +10,9 @@ public class PlayerController : MonoBehaviour
 
     public ContactFilter2D movementFilter;
 
+    public Vector2 currentVelocity = Vector2.zero;
+    public Vector2 currentInputMoveVector= Vector2.zero;
+
     InputAction moveAction;
 
     Rigidbody2D rb;
@@ -31,6 +34,7 @@ public class PlayerController : MonoBehaviour
 
     void Move(Vector2 inputMove)
     {
+        currentInputMoveVector = inputMove;
 
         //Check if you can move in horizontal and vertical direction (if there is not an obstacle)
         //Check seperately to ensure movement in a situation where you hold up and right and can't go right, you still go up
@@ -46,7 +50,10 @@ public class PlayerController : MonoBehaviour
             moveVector.y = inputMove.y;
 
         //Actually move the RB
-		rb.MovePosition(rb.position + moveVector * moveSpeed * Time.fixedDeltaTime);
+        Vector2 moveVectorFinal = moveVector * moveSpeed * Time.fixedDeltaTime;
+		rb.MovePosition(rb.position + moveVectorFinal);
+
+        currentVelocity = moveVectorFinal;
 
 
 	}
