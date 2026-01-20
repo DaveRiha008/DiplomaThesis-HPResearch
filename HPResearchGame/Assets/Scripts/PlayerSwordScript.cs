@@ -6,6 +6,8 @@ public class PlayerSwordScript : MonoBehaviour
     const string animAttackTriggerID = "Attack";
 
 	Animator animator;
+    [SerializeField]
+    PlayerController myPlayer;
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
@@ -27,4 +29,20 @@ public class PlayerSwordScript : MonoBehaviour
         animator.SetFloat(animAttackSpeedID, attackSpeed);
         animator.SetTrigger(animAttackTriggerID);
     }
+
+
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		if (collision.CompareTag("Enemy"))
+		{
+            bool isEnemy = collision.TryGetComponent(out EnemyController enemyHit);
+            if (!isEnemy)
+            {
+                Debug.LogError("Enemy tagged object does not have EnemyController component");
+                return;
+			}
+
+            myPlayer.EnemyHit(enemyHit);
+		}
+	}
 }

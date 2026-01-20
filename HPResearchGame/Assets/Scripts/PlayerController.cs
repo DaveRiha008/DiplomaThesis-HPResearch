@@ -67,6 +67,9 @@ public class PlayerController : MonoBehaviour
     float attackCooldown = 0.2f;
     float attackLastUsed = -10f;
 	bool isAttacking = false;
+    [SerializeField]
+    int attackDamage = 1;
+
 
 
 	Color origSpriteColor;
@@ -102,6 +105,7 @@ public class PlayerController : MonoBehaviour
         animator = gameObject.GetComponent<Animator>();
 
         cameraFollow = Camera.main.GetComponent<CameraFollowPlayer>();
+        playerSword.gameObject.SetActive(false);
 
 		origSpriteColor = spriteRenderer.color;
 
@@ -283,8 +287,10 @@ public class PlayerController : MonoBehaviour
             attackDir = cameraFollow.currentMouseOffset.normalized;
 
         if (playerSword != null)
-            playerSword.AnimateAttack(1/(attackDuration/0.417f), attackDir);
-
+        {
+            playerSword.gameObject.SetActive(true);
+            playerSword.AnimateAttack(1 / (attackDuration / 0.417f), attackDir);
+        }
 
 		animator.SetFloat(animAttackDirXID, attackDir.x);
         animator.SetFloat(animAttackDirYID, attackDir.y);
@@ -297,16 +303,23 @@ public class PlayerController : MonoBehaviour
 
     void AttackUpdate()
     {
-        //Attack logic here
         if (Time.time - attackStarted >= attackDuration)
             AttackEnd();
 	}
 
+    public void EnemyHit(EnemyController enemy) 
+    {
+        enemy.GetHit(attackDamage);
+	}
+
     void AttackEnd()
     {
+        if (playerSword != null)
+            playerSword.gameObject.SetActive(false);
+
         isAttacking = false;
         attackLastUsed = Time.time;
 	}
 
-	#endregion COMBAT
+    #endregion COMBAT
 }
