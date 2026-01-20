@@ -11,8 +11,11 @@ public class CameraFollowPlayer : MonoBehaviour
 
     float maxMoveBasedOffset = 1;
     float maxMouseBasedOffset = 1;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    [HideInInspector]
+    public Vector2 currentMouseOffset;
+	// Start is called once before the first execution of Update after the MonoBehaviour is created
+	void Start()
     {
         
     }
@@ -39,14 +42,14 @@ public class CameraFollowPlayer : MonoBehaviour
 
         //Primary target is the player
         Vector2 targetPos = VecConvert.ToVec2(playerObject.transform.position);
-        
-        //Get the mouse offset from center
-        Vector2 curMouseOffset = mousePos - screenCenter;
+
+		//Get the mouse offset from center
+		currentMouseOffset = mousePos - screenCenter;
         //Percentage of the offset magnitude out of the max offset
-        float curMouseDistPercentage = Mathf.Min(curMouseOffset.magnitude / maxMouseDist, 1);
+        float curMouseDistPercentage = Mathf.Min(currentMouseOffset.magnitude / maxMouseDist, 1);
         
         //Get the camera offset based on mouse offset
-        Vector2 fromMousePosOffset =  curMouseOffset.normalized * curMouseDistPercentage * maxMouseBasedOffset;
+        Vector2 fromMousePosOffset = currentMouseOffset.normalized * curMouseDistPercentage * maxMouseBasedOffset;
         //Get the camera offset based on the player movement
         Vector2 fromPlayerMovementOffset = playerObject.currentInputMoveVector.normalized * maxMoveBasedOffset;
         

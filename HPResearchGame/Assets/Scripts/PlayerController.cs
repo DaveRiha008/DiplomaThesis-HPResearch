@@ -5,11 +5,18 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    const string animRollingTriggerID = "RollTrigger";
-    const string animRollingDurationID = "RollDuration";
+	//Animation parameter IDs
+	const string animRollingTriggerID = "RollTrigger";
+    const string animRollingSpeedID = "RollSpeed";
     const string animXMoveID = "XMove";
     const string animYMoveID = "YMove";
+    const string animAttackingTriggerID = "AttackTrigger";
+    const string animAttackSpeedID = "AttackSpeed";
+    const string animAttackDirXID = "AttackDirX";
+    const string animAttackDirYID = "AttackDirY";
 
+
+	[Header("Movement variables")]
     public int moveSpeed = 10;
 
 	//Small offset to avoid getting stuck in walls due to precision errors
@@ -29,10 +36,11 @@ public class PlayerController : MonoBehaviour
 	/// </summary>
 	public Vector2 currentInputMoveVector= Vector2.zero;
 
-    /// <summary>
-    /// Duration of the roll animation and movement (next roll instantly available)
-    /// </summary>
-    [SerializeField]
+	[Header("Roll variables")]
+	/// <summary>
+	/// Duration of the roll animation and movement (next roll instantly available)
+	/// </summary>
+	[SerializeField]
     float rollDuration = 0.5f;
     /// <summary>
     /// Duration of the invincibility in the roll (should be lower than rollDuration)
@@ -42,61 +50,84 @@ public class PlayerController : MonoBehaviour
 
 	bool isRolling = false;
     bool isInvincibleInRoll = false;
-    float rollStarted = 0f;
+
+	float rollStarted = 0f;
     [SerializeField]
     float rollDistance = 5f;
     [SerializeField]
     Color rollColorChange = Color.cyan;
     [SerializeField]
     Color eyeFrameColorChange = Color.green;
-    Color origSpriteColor;
 
+    [Header("Attack variables")]
+
+    [SerializeField]
+    float attackDuration = 0.2f;
+    float attackStarted = 0f;
+    float attackCooldown = 0.2f;
+    float attackLastUsed = -10f;
+	bool isAttacking = false;
+
+
+	Color origSpriteColor;
+
+	//Input actions
 	InputAction moveAction;
     InputAction rollAction;
+    InputAction attackAction;
 
+	//Cached components
 	Rigidbody2D rb;
     SpriteRenderer spriteRenderer;
     Animator animator;
 
-    List<RaycastHit2D> moveCastHits = new();
+    [Header("References to objects")]
+    //Cached object references
+    [SerializeField]
+	PlayerSwordScript playerSword;
+    CameraFollowPlayer cameraFollow;
+
+	//Rigidbody cast hits list
+	List<RaycastHit2D> moveCastHits = new();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         moveAction = InputSystem.actions.FindAction("Move");
         rollAction = InputSystem.actions.FindAction("Roll");
+        attackAction = InputSystem.actions.FindAction("Attack");
+
 		rb = gameObject.GetComponent<Rigidbody2D>();
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         animator = gameObject.GetComponent<Animator>();
-        animator.SetFloat(animRollingDurationID, 1/rollDuration);
 
-        origSpriteColor = spriteRenderer.color;
+        cameraFollow = Camera.main.GetComponent<CameraFollowPlayer>();
+
+		origSpriteColor = spriteRenderer.color;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-		//Check if rolling
-        if (isRolling)
-        {
-            //If eyeFrames run out -> disable invincibility
-            if (isInvincibleInRoll && Time.time - rollStarted >= eyeFrameDuration)
-                EndOfRollEyeFrames();
-            //If roll duration passed, stop rolling
-            if (Time.time - rollStarted >= rollDuration)
-                StopRolling();
-		}
+		//Rolling check
+		if (isRolling)
+            RollUpdate();
+        else if (rollAction.triggered)
+            InitiateRoll();
+
+		//Attack check
+        if (isAttacking)
+            AttackUpdate();
+        else if (attackAction.triggered)
+            InitiateAttack();
 
 		//Move every frame -> idle if nothing is pressed
 		Move(moveAction.ReadValue<Vector2>());
 
-		//Start roll if roll button pressed and not already rolling
-        if (rollAction.triggered && !isRolling)
-        {
-            InitiateRoll();
-		}
 	}
+
+	#region MOVEMENT
 
 	void Move(Vector2 inputMove)
     {
@@ -106,7 +137,7 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat(animYMoveID, inputMove.y);
 
 
-        if (isRolling) return;
+        if (isRolling || isAttacking) return;
 
         Vector2 moveVector = GetPossibleMovement(inputMove, moveSpeed*Time.fixedDeltaTime);
 
@@ -189,12 +220,19 @@ public class PlayerController : MonoBehaviour
         return moveVector;
 	}
 
-    void InitiateRoll()
+	#endregion MOVEMENT
+
+	#region ROLLING
+	void InitiateRoll()
     {
-        isRolling = true;
+        if (isAttacking)
+            return;
+
+		isRolling = true;
         isInvincibleInRoll = true;
         rollStarted = Time.time;
-        animator.SetTrigger(animRollingTriggerID);
+		animator.SetFloat(animRollingSpeedID, 1 / (rollDuration / 0.333f)); //0.333f is the duration of the original roll animation
+		animator.SetTrigger(animRollingTriggerID);
 
         Vector2 possMove = GetPossibleMovement(currentInputMoveVector, rollDistance);
 
@@ -203,6 +241,16 @@ public class PlayerController : MonoBehaviour
 
         spriteRenderer.color = eyeFrameColorChange;
         spriteRenderer.DOBlendableColor(rollColorChange, rollDuration);
+	}
+
+    void RollUpdate()
+    {
+		//If eyeFrames run out -> disable invincibility
+		if (isInvincibleInRoll && Time.time - rollStarted >= eyeFrameDuration)
+			EndOfRollEyeFrames();
+		//If roll duration passed, stop rolling
+		if (Time.time - rollStarted >= rollDuration)
+			StopRolling();
 	}
 
     void EndOfRollEyeFrames()
@@ -217,4 +265,48 @@ public class PlayerController : MonoBehaviour
 		animator.SetBool(animRollingTriggerID, false);
 
 	}
+	#endregion ROLLING
+
+	#region COMBAT
+
+    void InitiateAttack()
+    {
+        if (isRolling)
+            return;
+
+		if (Time.time - attackLastUsed < attackCooldown)
+            return;
+
+        Vector2 attackDir = currentInputMoveVector.normalized;
+        
+        if (cameraFollow != null)
+            attackDir = cameraFollow.currentMouseOffset.normalized;
+
+        if (playerSword != null)
+            playerSword.AnimateAttack(1/(attackDuration/0.417f), attackDir);
+
+
+		animator.SetFloat(animAttackDirXID, attackDir.x);
+        animator.SetFloat(animAttackDirYID, attackDir.y);
+		animator.SetFloat(animAttackSpeedID, 1 / (attackDuration / 0.417f)); //0.417f is the duration of the original attack animation
+		animator.SetTrigger(animAttackingTriggerID);
+
+		isAttacking = true;
+        attackStarted = Time.time;
+	}
+
+    void AttackUpdate()
+    {
+        //Attack logic here
+        if (Time.time - attackStarted >= attackDuration)
+            AttackEnd();
+	}
+
+    void AttackEnd()
+    {
+        isAttacking = false;
+        attackLastUsed = Time.time;
+	}
+
+	#endregion COMBAT
 }
