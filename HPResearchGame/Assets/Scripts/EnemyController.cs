@@ -6,12 +6,22 @@ public class EnemyController : MonoBehaviour
 {
 	const string animXMoveID = "MoveX";
 	const string animYMoveID = "MoveY";
+	const string animAttackTriggerID = "AttackTrigger";
+	const string animAttackXID = "AttackX";
+	const string animAttackYID = "AttackY";
 
     [Header("Combat information")]
-	public int maxHP = 3;
+    [SerializeField]
+    int maxHP = 3;
     public int currentHP;
+    [SerializeField]
+    float attackCooldown = 1f;
+    float attackStartedAt = 0f;
+    float attackEndedAt = -1000f;
+    bool isAttacking = false;
 
-    [Header("Tween information")]
+
+	[Header("Tween information")]
     [SerializeField]
     float afterHitTweenDuration = 0.2f;
     [SerializeField]
@@ -55,6 +65,20 @@ public class EnemyController : MonoBehaviour
         RetargetDestination();
 
         SetAnimationMove();
+
+        if (!isAttacking && agent.remainingDistance <= agent.stoppingDistance && Time.time - attackEndedAt >= attackCooldown)
+        {
+            Attack();
+		}
+
+        else if (isAttacking)
+        {
+            if (Time.time - attackStartedAt >= 0.667f)
+            {
+                isAttacking = false;
+                attackEndedAt = Time.time;
+            }
+		}
 	}
 
     void SetAnimationMove()
@@ -74,6 +98,21 @@ public class EnemyController : MonoBehaviour
         agent.SetDestination(target.position);
     }
 
+    void Attack()
+    {
+        isAttacking = true;
+        attackStartedAt = Time.time;
+
+        Vector2 attackDir = (target.position - transform.position).normalized;
+        if (Mathf.Abs(attackDir.x) > Mathf.Abs(attackDir.y))
+            attackDir.y = 0f;
+        else
+            attackDir.x = 0f;
+
+		animator.SetFloat(animAttackXID, attackDir.x);
+        animator.SetFloat(animAttackYID, attackDir.y);
+		animator.SetTrigger(animAttackTriggerID);
+	}
 
 	public void GetHit(int damage)
     {
