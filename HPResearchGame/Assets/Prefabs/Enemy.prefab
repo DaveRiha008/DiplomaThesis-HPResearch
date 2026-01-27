@@ -51,10 +51,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHP: 3
   currentHP: 0
+  attackCooldown: 1
+  attackDuration: 0.3
   afterHitTweenDuration: 0.2
   afterHitColor: {r: 1, g: 0, b: 0, a: 1}
   target: {fileID: 0}
-  minDistanceToTarget: 2
+  minDistanceToTarget: 1
 --- !u!212 &7969289021891080796
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -194,7 +196,7 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 3.5
-  m_Acceleration: 8
+  m_Acceleration: 60
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0

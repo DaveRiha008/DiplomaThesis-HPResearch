@@ -69,6 +69,9 @@ public class PlayerController : MonoBehaviour
 	bool isAttacking = false;
     [SerializeField]
     int attackDamage = 1;
+    [SerializeField]
+    float maxHP = 10;
+    float currentHP;
 
 
 
@@ -109,7 +112,9 @@ public class PlayerController : MonoBehaviour
 
 		origSpriteColor = spriteRenderer.color;
 
-    }
+        currentHP = maxHP;
+
+	}
 
     // Update is called once per frame
     void Update()
@@ -244,7 +249,7 @@ public class PlayerController : MonoBehaviour
 
 
         spriteRenderer.color = eyeFrameColorChange;
-        spriteRenderer.DOBlendableColor(rollColorChange, rollDuration);
+        spriteRenderer.DOBlendableColor(rollColorChange, eyeFrameDuration);
 	}
 
     void RollUpdate()
@@ -319,6 +324,21 @@ public class PlayerController : MonoBehaviour
 
         isAttacking = false;
         attackLastUsed = Time.time;
+	}
+
+
+    public void GetHit(int damage)
+    {
+        if (isInvincibleInRoll)
+            return;
+
+        print($"Player got hit for {damage} damage!");
+
+        currentHP -= damage;
+
+        spriteRenderer.DOKill();
+        spriteRenderer.color = Color.red;
+        spriteRenderer.DOBlendableColor(origSpriteColor, 0.1f);
 	}
 
     #endregion COMBAT

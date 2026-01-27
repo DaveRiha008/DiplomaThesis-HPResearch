@@ -9,14 +9,17 @@ public class EnemyController : MonoBehaviour
 	const string animAttackTriggerID = "AttackTrigger";
 	const string animAttackXID = "AttackX";
 	const string animAttackYID = "AttackY";
+    const string animAttackSpeedID = "AttackSpeed";
 
-    [Header("Combat information")]
+	[Header("Combat information")]
     [SerializeField]
     int maxHP = 3;
     public int currentHP;
     [SerializeField]
     float attackCooldown = 1f;
-    float attackStartedAt = 0f;
+    [SerializeField]
+    float attackDuration = .3f;
+	float attackStartedAt = 0f;
     float attackEndedAt = -1000f;
     bool isAttacking = false;
 
@@ -36,10 +39,11 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     float minDistanceToTarget = 2f;
 
-	//Components
+    //Components
 	NavMeshAgent agent;
 	SpriteRenderer sr;
     Animator animator;
+    AbstractEnemyAttackScript attackScript;
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
@@ -49,6 +53,7 @@ public class EnemyController : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
 		sr = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        attackScript = GetComponent<AbstractEnemyAttackScript>();
 
 		//Agent setup
 		agent.updateRotation = false;
@@ -73,15 +78,15 @@ public class EnemyController : MonoBehaviour
 
         else if (isAttacking)
         {
-            if (Time.time - attackStartedAt >= 0.667f)
+            if (Time.time - attackStartedAt >= attackDuration)
             {
-                isAttacking = false;
-                attackEndedAt = Time.time;
+                AttackEnd();
             }
 		}
 	}
 
-    void SetAnimationMove()
+	#region Movement
+	void SetAnimationMove()
     {
 		Vector3 velocity = agent.velocity.normalized;
 		float ratio = Mathf.Abs(velocity.x) + Mathf.Abs(velocity.y); //Get the ratio to normalize diagonal movement
@@ -98,20 +103,45 @@ public class EnemyController : MonoBehaviour
         agent.SetDestination(target.position);
     }
 
-    void Attack()
+	#endregion
+
+	#region Combat
+
+	void Attack()
     {
         isAttacking = true;
         attackStartedAt = Time.time;
 
-        Vector2 attackDir = (target.position - transform.position).normalized;
-        if (Mathf.Abs(attackDir.x) > Mathf.Abs(attackDir.y))
-            attackDir.y = 0f;
-        else
-            attackDir.x = 0f;
+		//Calculate attack direction (only cardinal directions)
+		Vector2 attackDir = (target.position - transform.position).normalized;
+		if (Mathf.Abs(attackDir.x) > Mathf.Abs(attackDir.y))
+			attackDir.y = 0f;
+		else
+			attackDir.x = 0f;
 
+
+
+        //Call attack script
+        if (attackScript != null)
+            attackScript.Attack(attackDir, attackDuration, StartAttackAnimation);
+
+        //Stop movement during attack
+        agent.isStopped = true;
+	}
+
+    void StartAttackAnimation(float duration, Vector2 attackDir)
+    {
+		//Set attack animation parameters
 		animator.SetFloat(animAttackXID, attackDir.x);
-        animator.SetFloat(animAttackYID, attackDir.y);
+		animator.SetFloat(animAttackYID, attackDir.y);
+		animator.SetFloat(animAttackSpeedID, 1 / (duration / 0.667f)); //0.667f is the duration of the original attack animation
 		animator.SetTrigger(animAttackTriggerID);
+	}
+	void AttackEnd()
+    {
+		isAttacking = false;
+		attackEndedAt = Time.time;
+        agent.isStopped = false;
 	}
 
 	public void GetHit(int damage)
@@ -141,4 +171,6 @@ public class EnemyController : MonoBehaviour
         sr.DOKill(); //Stop any ongoing tweens on the SpriteRenderer to avoid null reference issues
 		Destroy(gameObject);
 	}
+
+	#endregion
 }
