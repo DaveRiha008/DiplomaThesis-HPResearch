@@ -249,7 +249,7 @@ public class PlayerController : MonoBehaviour
 
 
         spriteRenderer.color = eyeFrameColorChange;
-        spriteRenderer.DOBlendableColor(rollColorChange, eyeFrameDuration);
+        spriteRenderer.DOBlendableColor(rollColorChange, eyeFrameDuration).SetLink(gameObject);
 	}
 
     void RollUpdate()
@@ -265,7 +265,7 @@ public class PlayerController : MonoBehaviour
     void EndOfRollEyeFrames()
     {
         isInvincibleInRoll = false;
-        spriteRenderer.DOBlendableColor(origSpriteColor, rollDuration);
+        spriteRenderer.DOBlendableColor(origSpriteColor, rollDuration).SetLink(gameObject);
     }
 
     void StopRolling()
@@ -314,7 +314,12 @@ public class PlayerController : MonoBehaviour
 
     public void EnemyHit(EnemyController enemy) 
     {
-        enemy.GetHit(attackDamage);
+        bool killed = enemy.GetHit(attackDamage);
+
+        if (killed)
+        {
+            UIFlashingNumbers.ShowFlashingNumber(transform, enemy.experienceOnDeath, Color.yellow);
+		}
 	}
 
     void AttackEnd()
@@ -338,7 +343,9 @@ public class PlayerController : MonoBehaviour
 
         spriteRenderer.DOKill();
         spriteRenderer.color = Color.red;
-        spriteRenderer.DOBlendableColor(origSpriteColor, 0.1f);
+        spriteRenderer.DOBlendableColor(origSpriteColor, 0.1f).SetLink(gameObject);
+
+        UIFlashingNumbers.ShowFlashingNumber(transform, damage, Color.red);
 	}
 
     #endregion COMBAT

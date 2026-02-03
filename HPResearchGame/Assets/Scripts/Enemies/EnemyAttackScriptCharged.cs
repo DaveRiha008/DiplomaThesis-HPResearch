@@ -111,7 +111,7 @@ public class EnemyAttackScriptCharged : AbstractEnemyAttackScript
 		attackIndicatorSprite.enabled = true;
         attackIndicatorSprite.color = attackIndicatorSprite.color.WithAlpha(0);
         attackIndicatorSprite.DOColor(attackIndicatorSprite.color.WithAlpha(1f), attackDuration * attackChargeTimePercent)
-            .SetEase(Ease.Linear);
+            .SetEase(Ease.Linear).SetLink(gameObject);
 
 	}
 

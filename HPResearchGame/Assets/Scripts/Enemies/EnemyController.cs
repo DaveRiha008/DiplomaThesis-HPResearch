@@ -20,11 +20,13 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     float attackDuration = .3f;
     float attackStartedAt = 0f;
-    float attackEndedAt = -1000f;
+    float attackEndedAt = 0f;
     bool isAttacking = false;
 
+    [Header("Experience gain")]
+    public int experienceOnDeath = 5;
 
-    [Header("Tween information")]
+	[Header("Tween information")]
     [SerializeField]
     float afterHitTweenDuration = 0.2f;
     [SerializeField]
@@ -92,7 +94,9 @@ public class EnemyController : MonoBehaviour
 
         SetAnimationMove();
 
-        if (!isAttacking && (transform.position - target.position).magnitude <= agent.stoppingDistance && Time.time - attackEndedAt >= attackCooldown)
+        if (!isAttacking && 
+            agent.remainingDistance <= minDistanceToTarget && 
+            Time.time - attackEndedAt >= attackCooldown)
         {
             print("Attacking target.");
 			Attack();
@@ -165,7 +169,8 @@ public class EnemyController : MonoBehaviour
 
         //Stop movement during attack
         agent.isStopped = true;
-    }
+        agent.velocity = Vector2.zero;
+	}
 
     void StartAttackAnimation(float duration, Vector2 attackDir)
     {
@@ -182,25 +187,25 @@ public class EnemyController : MonoBehaviour
         agent.isStopped = false;
     }
 
-    public void GetHit(int damage)
+    public bool GetHit(int damage)
     {
         currentHP -= damage;
 
         if (currentHP <= 0)
         {
             Die();
-            return;
+            return true;
         }
         TweenAfterHit();
-
-
-    }
+        UIFlashingNumbers.ShowFlashingNumber(transform, damage, Color.red, GetComponent<Collider2D>().bounds.size/2 * Vector2.up);
+        return false;
+	}
 
     void TweenAfterHit()
     {
         sr.DOKill(); //Stop any ongoing tweens on the SpriteRenderer to avoid color conflicts
         sr.color = afterHitColor;
-        sr.DOColor(originalColor, afterHitTweenDuration);
+        sr.DOColor(originalColor, afterHitTweenDuration).SetLink(gameObject);
     }
 
 
