@@ -587,6 +587,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy Variant3
       objectReference: {fileID: 0}
+    - target: {fileID: 1422969702397642884, guid: 1e5c8aeb73655d542bd3d52666a6f891, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2559847074553528987, guid: 1e5c8aeb73655d542bd3d52666a6f891, type: 3}
       propertyPath: target
       value: 
@@ -1320,10 +1324,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy Variant2
       objectReference: {fileID: 0}
-    - target: {fileID: 1422969702397642884, guid: 893127c610ddff4489f3c477883dba09, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2559847074553528987, guid: 893127c610ddff4489f3c477883dba09, type: 3}
       propertyPath: target
       value: 
@@ -1625,7 +1625,7 @@ MonoBehaviour:
   rollColorChange: {r: 1, g: 1, b: 1, a: 1}
   eyeFrameColorChange: {r: 0, g: 1, b: 0, a: 1}
   attackDuration: 0.2
-  attackDamage: 1
+  attackDamage: 10
   maxHP: 10
   HPPerLevel: 5
   attackDamagePerLevel: 1

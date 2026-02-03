@@ -10,6 +10,10 @@ public class EnemyController : MonoBehaviour
     const string animAttackXID = "AttackX";
     const string animAttackYID = "AttackY";
     const string animAttackSpeedID = "AttackSpeed";
+    const string animCorpseRightID = "RightTrigger";
+    const string animCorpseLeftID = "LeftTrigger";
+    const string animCorpseUpID = "UpTrigger";
+    const string animCorpseDownID = "DownTrigger";
 
     [Header("Combat information")]
     [SerializeField]
@@ -63,6 +67,8 @@ public class EnemyController : MonoBehaviour
     [Header("Object References")]
 	[SerializeField]
 	PublicCollisionEvents awarenessArea;
+    [SerializeField]
+    Animator corpseAnimator;
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
@@ -213,9 +219,40 @@ public class EnemyController : MonoBehaviour
     void Die()
     {
         sr.DOKill(); //Stop any ongoing tweens on the SpriteRenderer to avoid null reference issues
+        TriggerCorpseAnimation();
+        
+        //Finish the attack, so it doesn't carry on the flags to respawn
         AttackEnd();
+
         gameObject.SetActive(false);
     }
+
+    void TriggerCorpseAnimation()
+    {
+		corpseAnimator.gameObject.SetActive(true);
+
+		//Detach the corpse, so it isn't disabled on death with this object
+		corpseAnimator.gameObject.transform.parent = transform.parent;
+
+		if (isAttacking)
+		{
+            float attackDirX = animator.GetFloat(animAttackXID);
+            float attackDirY = animator.GetFloat(animAttackYID);
+            if (attackDirX > 0) corpseAnimator.SetTrigger(animCorpseRightID);
+            else if (attackDirX < 0) corpseAnimator.SetTrigger(animCorpseLeftID);
+            else if (attackDirY > 0) corpseAnimator.SetTrigger(animCorpseUpID);
+            else corpseAnimator.SetTrigger(animCorpseDownID);
+		}
+        else
+        {
+            float moveDirX = animator.GetFloat(animXMoveID);
+            float moveDirY = animator.GetFloat(animYMoveID);
+			if (moveDirX > 0.5f) corpseAnimator.SetTrigger(animCorpseRightID);
+			else if (moveDirX < -0.5f) corpseAnimator.SetTrigger(animCorpseLeftID);
+			else if (moveDirY > 0.5f) corpseAnimator.SetTrigger(animCorpseUpID);
+			else corpseAnimator.SetTrigger(animCorpseDownID);
+		}
+	}
 
     public void Respawn()
     {
@@ -232,15 +269,25 @@ public class EnemyController : MonoBehaviour
         lastTimeTargetInAwareness = 0;
         attackEndedAt = 0;
 
-    }
+        DisableCorpseOnRespawn();
+	}
 
-    #endregion
+    void DisableCorpseOnRespawn()
+    {
+		//Reattach the corpse, so it isn't disabled on death with this object
+		corpseAnimator.gameObject.transform.parent = transform;
+		
+        corpseAnimator.gameObject.transform.position = transform.position;
+		corpseAnimator.gameObject.SetActive(false);
+	}
 
-    #region Awareness
+	#endregion
+
+	#region Awareness
 
 
 
-    void BindAwarenessTriggerMethods()
+	void BindAwarenessTriggerMethods()
     {
         if (awarenessArea != null)
         {
