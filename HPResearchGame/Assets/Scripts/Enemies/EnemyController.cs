@@ -168,10 +168,13 @@ public class EnemyController : MonoBehaviour
         else
             attackDir.x = 0f;
 
+		//Stop animation during attack -> will be continued in StartAttackAnimation
+        //Has to be before attackScript.Attack ->
+        //  else if the StartAttackAnimation is called immediately, will disable the animator for good
+		animator.enabled = false;
 
-
-        //Call attack script
-        if (attackScript != null)
+		//Call attack script
+		if (attackScript != null)
             attackScript.Attack(attackDir, attackDuration, StartAttackAnimation);
 
         //Stop movement during attack
@@ -181,6 +184,7 @@ public class EnemyController : MonoBehaviour
 
     void StartAttackAnimation(float duration, Vector2 attackDir)
     {
+        animator.enabled = true;
         //Set attack animation parameters
         animator.SetFloat(animAttackXID, attackDir.x);
         animator.SetFloat(animAttackYID, attackDir.y);
