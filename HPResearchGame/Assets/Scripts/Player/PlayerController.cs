@@ -75,6 +75,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float maxHP = 10;
     float currentHP;
+    Vector3 respawnLocation;
 
     [Header("Leveling variables")]
     int experiencePoints = 0;
@@ -126,6 +127,8 @@ public class PlayerController : MonoBehaviour
         playerSword.gameObject.SetActive(false);
 
 		origSpriteColor = spriteRenderer.color;
+
+        respawnLocation = transform.position;
 
         currentHP = maxHP;
 
@@ -356,6 +359,12 @@ public class PlayerController : MonoBehaviour
 
         currentHP -= damage;
 
+        if (currentHP <= 0)
+        {
+            Die();
+            return;
+        }
+
         spriteRenderer.DOKill();
         spriteRenderer.color = Color.red;
         spriteRenderer.DOBlendableColor(origSpriteColor, 0.1f).SetLink(gameObject);
@@ -363,11 +372,40 @@ public class PlayerController : MonoBehaviour
         UIFlashingNumbers.ShowFlashingNumber(transform, damage, Color.red);
 	}
 
+    void Die()
+    {
+        FullHeal();
+        rb.position = respawnLocation;
+        GameManager.Instance.RespawnAllEnemies();
+
+        spriteRenderer.color = spriteRenderer.color.WithAlpha(0);
+        spriteRenderer.DOColor(origSpriteColor.WithAlpha(1), .8f);
+    }
+
+
+	public void Heal(int healAmount)
+	{
+		currentHP = Mathf.Min(currentHP + healAmount, maxHP);
+		//Show heal amount
+		UIFlashingNumbers.ShowFlashingNumber(transform, healAmount, Color.green);
+	}
+
+	public void FullHeal()
+	{
+		currentHP = maxHP;
+	}
+
+    public void RestAtCheckpoint()
+    {
+        FullHeal();
+        respawnLocation = transform.position;
+    }
+
 	#endregion COMBAT
 
 	#region LEVELING
 
-    public void AddExperience(int exp)
+	public void AddExperience(int exp)
     {
 		experiencePoints += exp;
 
@@ -426,15 +464,5 @@ public class PlayerController : MonoBehaviour
 
 	#endregion
 
-    public void Heal(int healAmount)
-    {
-        currentHP = Mathf.Min(currentHP + healAmount, maxHP);
-        //Show heal amount
-        UIFlashingNumbers.ShowFlashingNumber(transform, healAmount, Color.green);
-	}
 
-    public void FullHeal()
-    {
-        currentHP = maxHP;
-    }
 }

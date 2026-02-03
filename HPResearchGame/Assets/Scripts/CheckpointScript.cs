@@ -48,7 +48,7 @@ public class CampfireScript : MonoBehaviour
             return;
 		}
 
-        player.FullHeal();
+        player.RestAtCheckpoint();
         GameManager.Instance.RespawnAllEnemies();
     }
 

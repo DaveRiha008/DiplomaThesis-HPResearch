@@ -79,6 +79,8 @@ public class EnemyController : MonoBehaviour
         agent.updateUpAxis = false;
         agent.stoppingDistance = minDistanceToTarget;
 
+        GameManager.Instance.allEnemiesRespawn.AddListener(Respawn);
+
         BindAwarenessTriggerMethods();
 
         originalColor = sr.color;
@@ -212,7 +214,7 @@ public class EnemyController : MonoBehaviour
     {
         sr.DOKill(); //Stop any ongoing tweens on the SpriteRenderer to avoid null reference issues
         AttackEnd();
-        GameManager.Instance.TemporarilyDisableEnemy(this);
+        gameObject.SetActive(false);
     }
 
     public void Respawn()
