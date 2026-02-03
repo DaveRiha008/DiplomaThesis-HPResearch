@@ -55,14 +55,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float rollDistance = 5f;
     [SerializeField]
-    Color rollColorChange = Color.cyan;
+    [Tooltip("Color to change to after eyeFrames")]
+	Color rollColorChange = Color.cyan;
     [SerializeField]
-    Color eyeFrameColorChange = Color.green;
+    [Tooltip("Color of the eye frame effect")]
+	Color eyeFrameColorChange = Color.green;
 
     [Header("Attack variables")]
 
     [SerializeField]
-    float attackDuration = 0.2f;
+    [Tooltip("Exact duration of the attack animation")]
+	float attackDuration = 0.2f;
     float attackStarted = 0f;
     float attackCooldown = 0.2f;
     float attackLastUsed = -10f;
@@ -73,7 +76,18 @@ public class PlayerController : MonoBehaviour
     float maxHP = 10;
     float currentHP;
 
-
+    [Header("Leveling variables")]
+    int experiencePoints = 0;
+    int currentLevel = 0;
+    [SerializeField]
+    [Tooltip("Max HP increase per level")]
+	int HPPerLevel = 5;
+    [SerializeField]
+    [Tooltip("Attack damage increase per level")]
+	int attackDamagePerLevel = 1;
+    [SerializeField]
+    [Tooltip("Movement speed increase per level")]
+	int moveSpeedPerLevel = 1;
 
 	Color origSpriteColor;
 
@@ -90,6 +104,7 @@ public class PlayerController : MonoBehaviour
     [Header("References to objects")]
     //Cached object references
     [SerializeField]
+    [Tooltip("Reference to the PlayerSwordScript attached to the player's sword object")]
 	PlayerSwordScript playerSword;
     CameraFollowPlayer cameraFollow;
 
@@ -286,7 +301,8 @@ public class PlayerController : MonoBehaviour
 		if (Time.time - attackLastUsed < attackCooldown)
             return;
 
-        Vector2 attackDir = currentInputMoveVector.normalized;
+		//Set attack direction (based on movement input or mouse position)
+		Vector2 attackDir = currentInputMoveVector.normalized;
         
         if (cameraFollow != null)
             attackDir = cameraFollow.currentMouseOffset.normalized;
@@ -297,6 +313,7 @@ public class PlayerController : MonoBehaviour
             playerSword.AnimateAttack(1 / (attackDuration / 0.417f), attackDir);
         }
 
+		//Set animator parameters
 		animator.SetFloat(animAttackDirXID, attackDir.x);
         animator.SetFloat(animAttackDirYID, attackDir.y);
 		animator.SetFloat(animAttackSpeedID, 1 / (attackDuration / 0.417f)); //0.417f is the duration of the original attack animation
@@ -318,7 +335,7 @@ public class PlayerController : MonoBehaviour
 
         if (killed)
         {
-            UIFlashingNumbers.ShowFlashingNumber(transform, enemy.experienceOnDeath, Color.yellow);
+            AddExperience(enemy.experienceOnDeath);
 		}
 	}
 
@@ -337,8 +354,6 @@ public class PlayerController : MonoBehaviour
         if (isInvincibleInRoll)
             return;
 
-        print($"Player got hit for {damage} damage!");
-
         currentHP -= damage;
 
         spriteRenderer.DOKill();
@@ -348,5 +363,59 @@ public class PlayerController : MonoBehaviour
         UIFlashingNumbers.ShowFlashingNumber(transform, damage, Color.red);
 	}
 
-    #endregion COMBAT
+	#endregion COMBAT
+
+	#region LEVELING
+
+    public void AddExperience(int exp)
+    {
+		experiencePoints += exp;
+
+        if (currentLevel < ExperienceLevelThresholds.thresholds.Length)
+        {
+            int newLevelThreshold = ExperienceLevelThresholds.thresholds[currentLevel];
+  			if (experiencePoints >= newLevelThreshold)
+                LevelUp();
+		}
+        else
+			UIFlashingNumbers.ShowFlashingNumber(transform, exp, Color.yellow);
+
+	}
+
+	void LevelUp()
+    {
+		//Add all the level up benefits
+		currentLevel++;
+        maxHP += HPPerLevel;
+        currentHP = Mathf.Min(currentHP + HPPerLevel, maxHP);
+		attackDamage += attackDamagePerLevel;
+        moveSpeed += moveSpeedPerLevel;
+
+
+		//Tween the level up effect
+		//Flash yellow
+		spriteRenderer.DOKill();
+        spriteRenderer.color = Color.yellow;
+        spriteRenderer.DOBlendableColor(origSpriteColor, 0.5f).SetLink(gameObject);
+
+		//Scale up and back down
+		transform.DOKill();
+        transform.DOScale(1.5f, 0.25f).SetLink(gameObject)
+            .OnComplete(() =>
+        {
+            transform.DOScale(1f, 0.25f).SetLink(gameObject);
+        });
+
+		//Show level up number
+		UIFlashingNumbers.ShowFlashingNumber(transform, currentLevel, Color.yellow, Vector2.up * .5f, Vector2.up * 2, 10, .1f, 1.5f);
+		//Show hp increase number
+        UIFlashingNumbers.ShowFlashingNumber(transform, HPPerLevel, Color.green, Vector2.right * .5f, Vector2.up * 1f, 5, .1f, 1f);
+		//Show attack damage increase number
+		UIFlashingNumbers.ShowFlashingNumber(transform, attackDamagePerLevel, new Color(1,.5f,0), Vector2.left * .5f, Vector2.up * 1f, 5, .1f, 1f);
+		//Show move speed increase number
+        UIFlashingNumbers.ShowFlashingNumber(transform, moveSpeedPerLevel, Color.cyan, Vector2.down * .5f, Vector2.up * 1f, 5, .1f, 1f);
+
+	}
+
+	#endregion
 }

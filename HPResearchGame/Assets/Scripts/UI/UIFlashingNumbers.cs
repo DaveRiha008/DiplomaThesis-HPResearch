@@ -10,14 +10,16 @@ public static class UIFlashingNumbers
 
 	static Vector2 _moveOffset = new Vector2(.3f, .9f);
 
-
-	public static void ShowFlashingNumber(Transform parentTransform, int number, Color color, Vector2 startOffset, Vector2 moveOffset, float fadeInDuration = _fadeInDuration, float fadeOutDuration = _fadeOutDuration)
+	/// <summary>
+	/// Will show a flashing number label at the given parent transform's position plus startOffset, moving by moveOffset, fading in and out.
+	/// </summary>
+	public static void ShowFlashingNumber(Transform parentTransform, int number, Color color, Vector2 startOffset, Vector2 moveOffset, int fontSize = 5, float fadeInDuration = _fadeInDuration, float fadeOutDuration = _fadeOutDuration)
     {
 		GameObject labelObject = new GameObject("FlashingNumberLabel");
 		TextMeshPro flashingNumberLabel = labelObject.AddComponent<TextMeshPro>();
 
 		flashingNumberLabel.text = number.ToString();
-		flashingNumberLabel.fontSize = 5;
+		flashingNumberLabel.fontSize = fontSize;
 		flashingNumberLabel.alignment = TextAlignmentOptions.Center;
 
 		flashingNumberLabel.transform.SetParent(parentTransform);
@@ -38,13 +40,19 @@ public static class UIFlashingNumbers
 		});
 	}
 
+	/// <summary>
+	/// Will show a flashing number label at the given parent transform's position fading in and out.
+	/// </summary>
 	public static void ShowFlashingNumber(Transform parentTransform, int number, Color color)
 	{
-		ShowFlashingNumber(parentTransform, number, color, Vector2.zero, _moveOffset, _fadeInDuration, _fadeOutDuration);
+		ShowFlashingNumber(parentTransform, number, color, Vector2.zero, _moveOffset, 5, _fadeInDuration, _fadeOutDuration);
 	}
 
+	/// <summary>
+	/// Will show a flashing number label at the given parent transform's position plus startOffset, fading in and out.
+	/// </summary>
 	public static void ShowFlashingNumber(Transform parentTransform, int number, Color color, Vector2 startOffset)
 	{
-		ShowFlashingNumber(parentTransform, number, color, startOffset, _moveOffset, _fadeInDuration, _fadeOutDuration);
+		ShowFlashingNumber(parentTransform, number, color, startOffset, _moveOffset, 5,_fadeInDuration, _fadeOutDuration);
 	}
 }

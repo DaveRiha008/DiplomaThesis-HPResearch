@@ -98,7 +98,6 @@ public class EnemyController : MonoBehaviour
             agent.remainingDistance <= minDistanceToTarget && 
             Time.time - attackEndedAt >= attackCooldown)
         {
-            print("Attacking target.");
 			Attack();
         }
 
