@@ -284,9 +284,21 @@ PrefabInstance:
       propertyPath: m_AgentTypeID
       value: -334000983
       objectReference: {fileID: 0}
+    - target: {fileID: 4894173157456612237, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
+      propertyPath: m_StoppingDistance
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
+      propertyPath: maxHP
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
       propertyPath: attackDuration
       value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
+      propertyPath: experienceOnDeath
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
       propertyPath: minDistanceToTarget

@@ -20,7 +20,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     float attackDuration = .3f;
     float attackStartedAt = 0f;
-    float attackEndedAt = 0f;
+    float attackEndedAt = -1000f;
     bool isAttacking = false;
 
     [Header("Experience gain")]
@@ -95,7 +95,7 @@ public class EnemyController : MonoBehaviour
         SetAnimationMove();
 
         if (!isAttacking && 
-            agent.remainingDistance <= minDistanceToTarget && 
+            (transform.position - target.position).magnitude <= minDistanceToTarget && 
             Time.time - attackEndedAt >= attackCooldown)
         {
 			Attack();
@@ -211,7 +211,25 @@ public class EnemyController : MonoBehaviour
     void Die()
     {
         sr.DOKill(); //Stop any ongoing tweens on the SpriteRenderer to avoid null reference issues
-        Destroy(gameObject);
+        AttackEnd();
+        GameManager.Instance.TemporarilyDisableEnemy(this);
+    }
+
+    public void Respawn()
+    {
+        //Activate
+        gameObject.SetActive(true);
+        
+        //Go back to patrolling position
+        transform.position = originalLocation;
+        
+        //Fully heal
+        currentHP = maxHP;
+        
+        //Reset timestamps
+        lastTimeTargetInAwareness = 0;
+        attackEndedAt = 0;
+
     }
 
     #endregion

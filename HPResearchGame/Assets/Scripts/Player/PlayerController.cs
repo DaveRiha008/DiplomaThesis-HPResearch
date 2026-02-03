@@ -114,9 +114,9 @@ public class PlayerController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        moveAction = InputSystem.actions.FindAction("Move");
-        rollAction = InputSystem.actions.FindAction("Roll");
-        attackAction = InputSystem.actions.FindAction("Attack");
+        moveAction = InputSystem.actions.FindAction(GlobalConstants.moveInputActionName);
+        rollAction = InputSystem.actions.FindAction(GlobalConstants.rollInputActionName);
+        attackAction = InputSystem.actions.FindAction(GlobalConstants.attackInputActionName);
 
 		rb = gameObject.GetComponent<Rigidbody2D>();
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
@@ -371,15 +371,22 @@ public class PlayerController : MonoBehaviour
     {
 		experiencePoints += exp;
 
-        if (currentLevel < ExperienceLevelThresholds.thresholds.Length)
-        {
-            int newLevelThreshold = ExperienceLevelThresholds.thresholds[currentLevel];
-  			if (experiencePoints >= newLevelThreshold)
-                LevelUp();
-		}
-        else
-			UIFlashingNumbers.ShowFlashingNumber(transform, exp, Color.yellow);
+        //Only show the exp fly if not leveled up
+        UIFlashingNumbers.ShowFlashingNumber(transform, exp, Color.yellow);
 
+	}
+
+    public bool LevelUpIfPossible()
+    {
+        if (currentLevel >= ExperienceLevelThresholds.thresholds.Length)
+            return false;
+        int newLevelThreshold = ExperienceLevelThresholds.thresholds[currentLevel];
+        if (experiencePoints >= newLevelThreshold)
+        {
+            LevelUp();
+            return true;
+        }
+        return false;
 	}
 
 	void LevelUp()
@@ -418,4 +425,16 @@ public class PlayerController : MonoBehaviour
 	}
 
 	#endregion
+
+    public void Heal(int healAmount)
+    {
+        currentHP = Mathf.Min(currentHP + healAmount, maxHP);
+        //Show heal amount
+        UIFlashingNumbers.ShowFlashingNumber(transform, healAmount, Color.green);
+	}
+
+    public void FullHeal()
+    {
+        currentHP = maxHP;
+    }
 }

@@ -274,8 +274,16 @@ PrefabInstance:
       value: 1479372276
       objectReference: {fileID: 0}
     - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
+      propertyPath: maxHP
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
       propertyPath: attackDuration
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
+      propertyPath: experienceOnDeath
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
       propertyPath: minDistanceToTarget
@@ -284,6 +292,10 @@ PrefabInstance:
     - target: {fileID: 7587864952615816407, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
       propertyPath: m_Name
       value: Enemy Variant3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587864952615816407, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7969289021891080796, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
       propertyPath: m_Sprite
