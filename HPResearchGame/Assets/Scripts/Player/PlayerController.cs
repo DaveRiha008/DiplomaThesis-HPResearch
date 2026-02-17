@@ -370,7 +370,7 @@ public class PlayerController : MonoBehaviour
 			return;
 		}
 
-		HUD.Instance.UpdateHealthBar(currentHP / maxHP);
+		HUD.Instance.UpdateHealthBar(currentHP, maxHP);
 
 		spriteRenderer.DOKill();
 		spriteRenderer.color = Color.red;
@@ -393,7 +393,7 @@ public class PlayerController : MonoBehaviour
 	public void Heal(int healAmount)
 	{
 		currentHP = Mathf.Min(currentHP + healAmount, maxHP);
-		HUD.Instance.UpdateHealthBar(currentHP / maxHP);
+		HUD.Instance.UpdateHealthBar(currentHP, maxHP);
 		//Show heal amount
 		UIFlashingNumbers.ShowFlashingNumber(transform, healAmount, Color.green);
 	}
@@ -401,7 +401,7 @@ public class PlayerController : MonoBehaviour
 	public void FullHeal()
 	{
 		currentHP = maxHP;
-		HUD.Instance.UpdateHealthBar(currentHP / maxHP);
+		HUD.Instance.UpdateHealthBar(currentHP, maxHP);
 	}
 
 	public void RestAtCheckpoint()
@@ -464,7 +464,7 @@ public class PlayerController : MonoBehaviour
 
 	void LevelUpUpdateHUD()
 	{
-		HUD.Instance.UpdateHealthBar(currentHP / maxHP);
+		HUD.Instance.UpdateHealthBar(currentHP, maxHP);
 		if (currentLevel < ExperienceLevelThresholds.thresholds.Length)
 		{
 			HUD.Instance.UpdateXPBar(experiencePoints / (float)ExperienceLevelThresholds.thresholds[currentLevel]);
@@ -494,7 +494,7 @@ public class PlayerController : MonoBehaviour
 			});
 
 		//Show level up number
-		UIFlashingNumbers.ShowFlashingNumber(transform, currentLevel, Color.yellow, Vector2.up * .5f, Vector2.up * 2, 10, .1f, 1.5f);
+		UIFlashingNumbers.ShowFlashingNumber(transform, currentLevel+1, Color.yellow, Vector2.up * .5f, Vector2.up * 2, 10, .1f, 1.5f);
 		//Show hp increase number
 		UIFlashingNumbers.ShowFlashingNumber(transform, HPPerLevel, Color.green, Vector2.right * .5f, Vector2.up * 1f, 5, .1f, 1f);
 		//Show attack damage increase number

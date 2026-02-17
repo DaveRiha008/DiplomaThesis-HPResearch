@@ -10,12 +10,19 @@ public class CampfireScript : MonoBehaviour
     InputAction restAction;
     InputAction levelUpAction;
 
+    [SerializeField] AnimationClip campfireAnimation;
+    [SerializeField] AnimationClip highlightedCampfireAnimation;
+
+    Animator animator;
+
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
     {
         restAction = InputSystem.actions.FindAction(GlobalConstants.interactInputActionName);    
         levelUpAction = InputSystem.actions.FindAction(GlobalConstants.interact2InputActionName);    
-    }
+
+        animator = GetComponent<Animator>();
+	}
 
     // Update is called once per frame
     void Update()
@@ -43,6 +50,8 @@ public class CampfireScript : MonoBehaviour
         {
             HUD.Instance.ShowControlsPopUp(HUD.ControlsPopUpType.LevelUp);
 		}
+
+        animator.Play(highlightedCampfireAnimation.name);
 	}
 
     void PlayerLeft()
@@ -50,6 +59,8 @@ public class CampfireScript : MonoBehaviour
 		playerInRange = false;
         HUD.Instance.HideControlsPopUp(HUD.ControlsPopUpType.Heal);
         HUD.Instance.HideControlsPopUp(HUD.ControlsPopUpType.LevelUp);
+
+        animator.Play(campfireAnimation.name);
 	}
 
 	void Rest()

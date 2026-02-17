@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class HUD : MonoSingleton<HUD>
 {
 
+    int maxHealthThreshold = 50;
+
     [Header("References")]
 	[SerializeField] Slider healthBar;
 	[SerializeField] Slider attackCDBar;
@@ -35,9 +37,10 @@ public class HUD : MonoSingleton<HUD>
     }
 
 
-    public void UpdateHealthBar(float healthPercentage)
+    public void UpdateHealthBar(float curHealth, float maxHealth)
     {
-        healthBar.value = healthPercentage;
+        healthBar.value = curHealth/maxHealth;
+        healthBar.gameObject.GetComponent<RectTransform>().anchorMax = new Vector2(maxHealth/(float)maxHealthThreshold, 1);
 	}
 
     public void StartAttackCDBarRegen(float regenDuration)
