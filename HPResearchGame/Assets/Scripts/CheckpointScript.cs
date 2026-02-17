@@ -35,9 +35,21 @@ public class CampfireScript : MonoBehaviour
     {
         playerInRange = true;
 
-        print("Player in range! \n\t PRESS E TO HEAL \n\t PRESS F TO LEVEL UP");
-		//TODO UI Instruction to press E to rest
-		//TODO UI Instruction to press F to level up
+        //UI Instruction to press E to rest
+		HUD.Instance.ShowControlsPopUp(HUD.ControlsPopUpType.Heal);
+
+		//UI Instruction to press F to level up
+        if (player.CanLevelUp())
+        {
+            HUD.Instance.ShowControlsPopUp(HUD.ControlsPopUpType.LevelUp);
+		}
+	}
+
+    void PlayerLeft()
+    {
+		playerInRange = false;
+        HUD.Instance.HideControlsPopUp(HUD.ControlsPopUpType.Heal);
+        HUD.Instance.HideControlsPopUp(HUD.ControlsPopUpType.LevelUp);
 	}
 
 	void Rest()
@@ -78,7 +90,8 @@ public class CampfireScript : MonoBehaviour
     {
 		if (collision.CompareTag("Player"))
 		{
-			playerInRange = false;
+            PlayerLeft();
 		}
 	}
+
 }
