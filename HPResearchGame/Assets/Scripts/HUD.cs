@@ -66,7 +66,16 @@ public class HUD : MonoSingleton<HUD>
     {
         healItemCountLabel.text = $"{count}";
     }
-    public void ShowControlsPopUp(ControlsPopUpType type)
+    public void AddHealItem()
+    {
+        healItemCountLabel.text = $"{int.Parse(healItemCountLabel.text) + 1}";
+	}
+    public void RemoveHealItem()
+    {
+        healItemCountLabel.text = $"{int.Parse(healItemCountLabel.text) - 1}";
+    }
+
+	public void ShowControlsPopUp(ControlsPopUpType type)
     {
         string popUpName = controlsPopUpNames[type];
         Transform popUpTransform = controlsPopUpParent.transform.Find(popUpName);

@@ -77,6 +77,17 @@ public class PlayerController : MonoBehaviour
 	float currentHP;
 	Vector3 respawnLocation;
 
+	[Header("Healing variables")]
+	[SerializeField]
+	int maxHealItemCount = 3;
+	int currentHealItemCount = 0;
+	int healAmountFromHealItem = 5;
+	float healItemUseDuration = 0.5f;
+	float healItemUseStarted = 0f;
+	bool isUsingHealItem = false;
+	[SerializeField]
+	Sprite usingHealItemSprite;
+
 	[Header("Leveling variables")]
 	int experiencePoints = 0;
 	int currentLevel = 0;
@@ -96,6 +107,7 @@ public class PlayerController : MonoBehaviour
 	InputAction moveAction;
 	InputAction rollAction;
 	InputAction attackAction;
+	InputAction useHealAction;
 
 	//Cached components
 	Rigidbody2D rb;
@@ -118,6 +130,7 @@ public class PlayerController : MonoBehaviour
 		moveAction = InputSystem.actions.FindAction(GlobalConstants.moveInputActionName);
 		rollAction = InputSystem.actions.FindAction(GlobalConstants.rollInputActionName);
 		attackAction = InputSystem.actions.FindAction(GlobalConstants.attackInputActionName);
+		useHealAction = InputSystem.actions.FindAction(GlobalConstants.useHealInputActionName);
 
 		rb = gameObject.GetComponent<Rigidbody2D>();
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
@@ -131,7 +144,7 @@ public class PlayerController : MonoBehaviour
 		respawnLocation = transform.position;
 
 		currentHP = maxHP;
-
+		currentHealItemCount = maxHealItemCount;
 	}
 
 	// Update is called once per frame
@@ -149,6 +162,11 @@ public class PlayerController : MonoBehaviour
 		else if (attackAction.triggered)
 			InitiateAttack();
 
+		//Heal item use check
+		//TODO: add usage time for healing item and animation
+		if (useHealAction.triggered)
+			UseHealItem();
+
 		//Move every frame -> idle if nothing is pressed
 		Move(moveAction.ReadValue<Vector2>());
 
@@ -164,7 +182,7 @@ public class PlayerController : MonoBehaviour
 		animator.SetFloat(animYMoveID, inputMove.y);
 
 
-		if (isRolling || isAttacking) return;
+		if (isRolling || isAttacking || isUsingHealItem) return;
 
 		Vector2 moveVector = GetPossibleMovement(inputMove, moveSpeed * Time.fixedDeltaTime);
 
@@ -252,7 +270,7 @@ public class PlayerController : MonoBehaviour
 	#region ROLLING
 	void InitiateRoll()
 	{
-		if (isAttacking)
+		if (isAttacking || isUsingHealItem)
 			return;
 
 		isRolling = true;
@@ -301,7 +319,7 @@ public class PlayerController : MonoBehaviour
 
 	void InitiateAttack()
 	{
-		if (isRolling)
+		if (isRolling || isUsingHealItem)
 			return;
 
 		if (Time.time - attackLastUsed < attackCooldown)
@@ -382,32 +400,12 @@ public class PlayerController : MonoBehaviour
 	void Die()
 	{
 		FullHeal();
+		RestoreHealItems();
 		rb.position = respawnLocation;
 		GameManager.Instance.RespawnAllEnemies();
 
 		spriteRenderer.color = spriteRenderer.color.WithAlpha(0);
 		spriteRenderer.DOColor(origSpriteColor.WithAlpha(1), .8f);
-	}
-
-
-	public void Heal(int healAmount)
-	{
-		currentHP = Mathf.Min(currentHP + healAmount, maxHP);
-		HUD.Instance.UpdateHealthBar(currentHP, maxHP);
-		//Show heal amount
-		UIFlashingNumbers.ShowFlashingNumber(transform, healAmount, Color.green);
-	}
-
-	public void FullHeal()
-	{
-		currentHP = maxHP;
-		HUD.Instance.UpdateHealthBar(currentHP, maxHP);
-	}
-
-	public void RestAtCheckpoint()
-	{
-		FullHeal();
-		respawnLocation = transform.position;
 	}
 
 	#endregion COMBAT
@@ -505,5 +503,84 @@ public class PlayerController : MonoBehaviour
 
 	#endregion
 
+	#region HEALING
 
+	public void Heal(int healAmount)
+	{
+		currentHP = Mathf.Min(currentHP + healAmount, maxHP);
+		HUD.Instance.UpdateHealthBar(currentHP, maxHP);
+		//Show heal amount
+		UIFlashingNumbers.ShowFlashingNumber(transform, healAmount, Color.green);
+	}
+
+	public void FullHeal()
+	{
+		currentHP = maxHP;
+		HUD.Instance.UpdateHealthBar(currentHP, maxHP);
+	}
+
+	public void RestAtCheckpoint()
+	{
+		FullHeal();
+		RestoreHealItems();
+		respawnLocation = transform.position;
+	}
+
+	public bool CanUseHealItem()
+	{
+		//Is already doing another action
+		if (isRolling || isAttacking || isUsingHealItem)
+			return false;
+
+		return currentHealItemCount > 0;
+	}
+
+	public void UseHealItem()
+	{
+		if (!CanUseHealItem())
+			return;
+
+		if (currentHealItemCount <= 0)
+			return;
+		currentHealItemCount--;
+		HUD.Instance.RemoveHealItem();
+		Heal(healAmountFromHealItem);
+
+		isUsingHealItem = true;
+		healItemUseStarted = Time.time;
+		TweenUseHealItem();
+	}
+
+	void TweenUseHealItem()
+	{
+		animator.enabled = false;
+		spriteRenderer.sprite = usingHealItemSprite;
+		spriteRenderer.DOKill();
+		spriteRenderer.color = Color.green;
+		spriteRenderer.DOBlendableColor(origSpriteColor, healItemUseDuration)
+			.SetLink(gameObject)
+			.SetEase(Ease.OutFlash);
+		this.CallWithDelay(() =>
+		{
+			isUsingHealItem = false;
+			animator.enabled = true;
+		}, 
+		healItemUseDuration);
+	}
+
+	public void AddHealItem()
+	{
+		if (currentHealItemCount >= maxHealItemCount)
+			return;
+		currentHealItemCount++;
+		HUD.Instance.AddHealItem();
+	}
+
+	public void RestoreHealItems()
+	{
+		currentHealItemCount = maxHealItemCount;
+		HUD.Instance.UpdateHealItemCount(maxHealItemCount);
+	}
+
+	#endregion
 }

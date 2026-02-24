@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class MonoBehaviourExtensions
 {
-	public static void Invoke(this MonoBehaviour mb, Action f, float delay)
+	public static void CallWithDelay(this MonoBehaviour mb, Action f, float delay)
 	{
 		mb.StartCoroutine(InvokeRoutine(f, delay));
 	}

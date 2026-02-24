@@ -1702,6 +1702,8 @@ MonoBehaviour:
   attackDuration: 0.2
   attackDamage: 10
   maxHP: 10
+  maxHealItemCount: 3
+  usingHealItemSprite: {fileID: -8643618252241972829, guid: 9b4b19918b48e3f40a01233cee6b8120, type: 3}
   HPPerLevel: 5
   attackDamagePerLevel: 1
   moveSpeedPerLevel: 1

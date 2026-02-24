@@ -5,4 +5,5 @@ public struct GlobalConstants
 	public const string attackInputActionName = "Attack";
 	public const string interactInputActionName = "Interact";
 	public const string interact2InputActionName = "InteractSecondary";
+	public const string useHealInputActionName = "UseHeal";
 }
