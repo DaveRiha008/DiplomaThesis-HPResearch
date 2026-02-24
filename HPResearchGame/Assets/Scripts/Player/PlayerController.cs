@@ -145,6 +145,8 @@ public class PlayerController : MonoBehaviour
 
 		currentHP = maxHP;
 		currentHealItemCount = maxHealItemCount;
+
+		HUD.Instance.UpdateHealthBar(currentHP, maxHP);
 	}
 
 	// Update is called once per frame

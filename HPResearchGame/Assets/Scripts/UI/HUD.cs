@@ -10,13 +10,21 @@ public class HUD : MonoSingleton<HUD>
     int maxHealthThreshold = 50;
 
     [Header("References")]
+    [Header("HP")]
 	[SerializeField] Slider healthBar;
+	[SerializeField] HeartGroupUI heartGroup;
+    [SerializeField] TextMeshProUGUI healItemCountLabel;
+
+    [Header("CD")]
 	[SerializeField] Slider attackCDBar;
 	[SerializeField] Slider rollCDBar;
-    [SerializeField] Slider xpBar;
+
+    [Header("XP")]
+	[SerializeField] Slider xpBar;
     [SerializeField] TextMeshProUGUI levelLabel;
-    [SerializeField] TextMeshProUGUI healItemCountLabel;
-    [SerializeField] GameObject controlsPopUpParent;
+
+    [Header("Controls")]
+	[SerializeField] GameObject controlsPopUpParent;
 
 
 	/// <summary>
@@ -39,11 +47,17 @@ public class HUD : MonoSingleton<HUD>
 
     public void UpdateHealthBar(float curHealth, float maxHealth)
     {
-        healthBar.value = curHealth/maxHealth;
-        healthBar.gameObject.GetComponent<RectTransform>().anchorMax = new Vector2(maxHealth/(float)maxHealthThreshold, 1);
+		//Elden ring approach
+
+		//healthBar.value = curHealth/maxHealth;
+		//healthBar.gameObject.GetComponent<RectTransform>().anchorMax = new Vector2(maxHealth/(float)maxHealthThreshold, 1);
+
+		//Hollow knight approach
+        heartGroup.UpdateHealth((int)curHealth, (int)maxHealth);
+
 	}
 
-    public void StartAttackCDBarRegen(float regenDuration)
+	public void StartAttackCDBarRegen(float regenDuration)
     {
         attackCDBar.value = 0;
         attackCDBar.DOValue(1, regenDuration);
