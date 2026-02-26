@@ -49,5 +49,18 @@ public class PlayerSwordScript : MonoBehaviour
 
             myPlayer.EnemyHit(enemyHit);
 		}
+
+        if (collision.CompareTag("DestructibleObject"))
+        {
+            bool isDestructibleObject = collision.TryGetComponent(out DestructibleScript destructibleObject);
+            if (!isDestructibleObject)
+            {
+                Debug.LogError("DestructibleObject tagged object does not have DestructibleObjectController component");
+                return;
+            }
+            if(destructibleObject.GotHit())
+                //Delay the call to allow the hit animation to play before the object is destroyed
+                myPlayer.CallWithDelay(() => myPlayer.DestructibleObjectDestroyed(destructibleObject), .333f);
+		}
 	}
 }

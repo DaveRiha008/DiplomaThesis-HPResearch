@@ -585,4 +585,11 @@ public class PlayerController : MonoBehaviour
 	}
 
 	#endregion
+	#region Environment interaction
+	public void DestructibleObjectDestroyed(DestructibleScript destroyedObject)
+	{
+		Debug.Log("Player notified of destructible object destruction");
+		//TODO: add a chance to drop a heal item on destruction or something like that
+	}
+	#endregion
 }

@@ -73,7 +73,8 @@ public class CampfireScript : MonoBehaviour
 
         player.RestAtCheckpoint();
         GameManager.Instance.RespawnAllEnemies();
-    }
+        GameManager.Instance.RespawnAllDestructible();
+	}
 
     void LevelUp()
     {
