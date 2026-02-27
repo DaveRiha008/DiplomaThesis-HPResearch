@@ -60,7 +60,7 @@ public class PlayerSwordScript : MonoBehaviour
             }
             if(destructibleObject.GotHit())
                 //Delay the call to allow the hit animation to play before the object is destroyed
-                myPlayer.CallWithDelay(() => myPlayer.DestructibleObjectDestroyed(destructibleObject), .333f);
+                myPlayer.CallWithDelay(() => myPlayer.DestructibleObjectDestroyed(destructibleObject), .1f);
 		}
 	}
 }

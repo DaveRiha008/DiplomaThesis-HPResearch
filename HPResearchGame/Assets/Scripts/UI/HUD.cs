@@ -18,6 +18,12 @@ public class HUD : MonoSingleton<HUD>
 	[SerializeField] GameObject healItemBB;
 	[SerializeField] TextMeshProUGUI healItemCountLabelDS;
 	[SerializeField] TextMeshProUGUI healItemCountLabelBB;
+	public Sprite CurHealItemSprite { get 
+		{
+			if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.DarkSoulsItems) return healItemDS.GetComponent<Image>().sprite;
+			else if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.BloodborneItems) return healItemBB.GetComponent<Image>().sprite;
+			else return null;
+		} }
 
 	[Header("CD")]
 	[SerializeField] Slider attackCDBar;

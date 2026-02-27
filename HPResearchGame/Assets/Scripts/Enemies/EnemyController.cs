@@ -30,6 +30,9 @@ public class EnemyController : MonoBehaviour
     [Header("Experience gain")]
     public int experienceOnDeath = 5;
 
+    [Header("HealItemDrop")]
+    public float healItemDropChance = 0.1f; // Chance to drop a heal item on death (0 to 1)
+
 	[Header("Tween information")]
     [SerializeField]
     float afterHitTweenDuration = 0.2f;
@@ -208,7 +211,7 @@ public class EnemyController : MonoBehaviour
             return true;
         }
         TweenAfterHit();
-        UIFlashingNumbers.ShowFlashingNumber(transform, damage, Color.red, GetComponent<Collider2D>().bounds.size/2 * Vector2.up);
+        UIFlashingElements.ShowFlashingText(transform, damage.ToString(), Color.red, GetComponent<Collider2D>().bounds.size/2 * Vector2.up);
         return false;
 	}
 

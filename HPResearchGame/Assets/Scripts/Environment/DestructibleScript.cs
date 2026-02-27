@@ -11,14 +11,14 @@ public class DestructibleScript : MonoBehaviour
 	int hitPoints = 2;
 
     Animator animator;
-    Collider2D collider;
+    Collider2D col;
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
     {
         GameManager.Instance.allDestructibleRespawn.AddListener(Respawn);
 
 		animator = GetComponent<Animator>();
-        collider = GetComponent<Collider2D>();
+        col = GetComponent<Collider2D>();
 	}
 
     // Update is called once per frame
@@ -46,13 +46,13 @@ public class DestructibleScript : MonoBehaviour
     void GotDestroyed()
     {
 		animator.SetTrigger(animDestroyTrigger);
-        collider.enabled = false;
+        col.enabled = false;
 
 	}
 
 	public void Respawn()
     {
-        collider.enabled = true;
+        col.enabled = true;
 		hitPoints = 2;
         animator.SetTrigger(animRespawnTrigger);
 	}

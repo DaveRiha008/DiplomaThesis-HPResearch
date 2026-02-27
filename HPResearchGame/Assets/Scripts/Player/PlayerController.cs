@@ -362,9 +362,14 @@ public class PlayerController : MonoBehaviour
 	{
 		bool killed = enemy.GetHit(attackDamage);
 
+		//If the enemy was killed, add experience and possibly get heal item if that is the current approach
 		if (killed)
 		{
 			AddExperience(enemy.experienceOnDeath);
+			
+			if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.BloodborneItems)
+				if (Random.Range(0f, 1f) <= enemy.healItemDropChance)
+					AddHealItem();
 		}
 	}
 
@@ -397,7 +402,7 @@ public class PlayerController : MonoBehaviour
 		spriteRenderer.color = Color.red;
 		spriteRenderer.DOBlendableColor(origSpriteColor, 0.1f).SetLink(gameObject);
 
-		UIFlashingNumbers.ShowFlashingNumber(transform, damage, Color.red);
+		UIFlashingElements.ShowFlashingText(transform, $"-{damage.ToString()}", Color.red);
 	}
 
 	void Die()
@@ -423,7 +428,7 @@ public class PlayerController : MonoBehaviour
 			HUD.Instance.UpdateXPBar(experiencePoints / (float)ExperienceLevelThresholds.thresholds[currentLevel]);
 
 		//Only show the exp fly if not leveled up
-		UIFlashingNumbers.ShowFlashingNumber(transform, exp, Color.yellow);
+		UIFlashingElements.ShowFlashingText(transform, $"+{exp}xp", Color.yellow);
 
 	}
 
@@ -495,13 +500,26 @@ public class PlayerController : MonoBehaviour
 			});
 
 		//Show level up number
-		UIFlashingNumbers.ShowFlashingNumber(transform, currentLevel+1, Color.yellow, Vector2.up * .5f, Vector2.up * 2, 10, .1f, 1.5f);
+		UIFlashingElements.ShowFlashingText(transform, $"Level {currentLevel + 1}", Color.yellow, Vector2.up * .5f, Vector2.up * 2, 10, .1f, 1.5f);
+
 		//Show hp increase number
-		UIFlashingNumbers.ShowFlashingNumber(transform, HPPerLevel, Color.green, Vector2.right * .5f, Vector2.up * 1f, 5, .1f, 1f);
+		this.CallWithDelay(() =>
+		{
+			UIFlashingElements.ShowFlashingText(transform, $"+{HPPerLevel} maxHP", Color.green, Vector2.right * .5f, Vector2.up * 1f, 5, .1f, 1f);
+		}
+		, .3f);
+
 		//Show attack damage increase number
-		UIFlashingNumbers.ShowFlashingNumber(transform, attackDamagePerLevel, new Color(1, .5f, 0), Vector2.left * .5f, Vector2.up * 1f, 5, .1f, 1f);
+		this.CallWithDelay(() =>
+		{
+			UIFlashingElements.ShowFlashingText(transform, $"+{attackDamagePerLevel} Dmg", new Color(1, .5f, 0), Vector2.left * .5f, Vector2.up * 1f, 5, .1f, 1f);
+		}, .6f);
+
 		//Show move speed increase number
-		UIFlashingNumbers.ShowFlashingNumber(transform, moveSpeedPerLevel, Color.cyan, Vector2.down * .5f, Vector2.up * 1f, 5, .1f, 1f);
+		this.CallWithDelay(() =>
+		{
+			UIFlashingElements.ShowFlashingText(transform, $"+{moveSpeedPerLevel} Speed", Color.cyan, Vector2.down * .5f, Vector2.up * 1f, 5, .1f, 1f);
+		}, .9f);
 	}
 
 	#endregion
@@ -513,7 +531,7 @@ public class PlayerController : MonoBehaviour
 		currentHP = Mathf.Min(currentHP + healAmount, maxHP);
 		HUD.Instance.UpdateHealthBar(currentHP, maxHP);
 		//Show heal amount
-		UIFlashingNumbers.ShowFlashingNumber(transform, healAmount, Color.green);
+		UIFlashingElements.ShowFlashingText(transform, $"+{healAmount}", Color.green);
 	}
 
 	public void FullHeal()
@@ -577,6 +595,8 @@ public class PlayerController : MonoBehaviour
 			return;
 		currentHealItemCount++;
 		HUD.Instance.AddHealItem();
+
+		UIFlashingElements.ShowFlashingSprite(transform, HUD.Instance.CurHealItemSprite, Vector2.zero, Vector2.up * 1.5f, Vector3.one * 0.75f);
 	}
 
 	public void RestoreHealItems()
