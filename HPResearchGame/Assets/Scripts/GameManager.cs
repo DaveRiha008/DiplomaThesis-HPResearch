@@ -1,8 +1,11 @@
 using UnityEngine.Events;
+using UnityEngine;
 
 class GameManager : MonoSingleton<GameManager>
 {
+	[HideInInspector]
 	public UnityEvent allEnemiesRespawn;
+	[HideInInspector]
 	public UnityEvent allDestructibleRespawn;
 
 	private HPShowApproach _curHPShowApproach;
@@ -21,13 +24,23 @@ class GameManager : MonoSingleton<GameManager>
 			onHPRegenApproachChange.Invoke();
 		}
 	}
+	[HideInInspector]
 	public UnityEvent onHPShowApproachChange;
+	[HideInInspector]
 	public UnityEvent onHPRegenApproachChange;
 
 	private void Start()
 	{
 		CurHPShowApproach = HPShowApproach.HollowKnight;
 		CurHPRegenApproach = HPRegenApproach.OverTime;
+	}
+
+	private void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.L)){
+			ChangeHPRegenApproach((HPRegenApproach)((int)(CurHPRegenApproach + 1) % System.Enum.GetValues(typeof(HPRegenApproach)).Length));
+			ChangeHPShowApproach((HPShowApproach)((int)(CurHPShowApproach + 1) % System.Enum.GetValues(typeof(HPShowApproach)).Length));
+		}
 	}
 
 	public void RespawnAllEnemies()
