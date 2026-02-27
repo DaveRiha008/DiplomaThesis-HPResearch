@@ -556,6 +556,11 @@ public class PlayerController : MonoBehaviour
 		if (isRolling || isAttacking || isUsingHealItem)
 			return false;
 
+		//Not using an approach with heal items
+		if (GameManager.Instance.CurHPRegenApproach != HPRegenApproach.BloodborneItems &&
+			GameManager.Instance.CurHPRegenApproach != HPRegenApproach.DarkSoulsItems)
+			return false;
+
 		return currentHealItemCount > 0;
 	}
 
