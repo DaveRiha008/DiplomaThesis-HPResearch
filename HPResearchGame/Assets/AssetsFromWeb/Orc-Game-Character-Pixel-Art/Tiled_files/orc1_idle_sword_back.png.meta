@@ -117,6 +117,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -309,7 +322,15 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      orc1_idle_sword_back_0: -2150703313166629297
+      orc1_idle_sword_back_1: -5069658118414959974
+      orc1_idle_sword_back_2: -7778176932410516850
+      orc1_idle_sword_back_3: -7355693045319191995
+      orc1_idle_sword_back_4: -8460180559309371097
+      orc1_idle_sword_back_5: -4621050242096258101
+      orc1_idle_sword_back_6: 3126989812478188785
+      orc1_idle_sword_back_7: -3430092992170309165
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
