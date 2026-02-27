@@ -6,9 +6,13 @@ public static class VecConvert
 	{
 		return new Vector2(vec3.x, vec3.y);
 	}
-	public static Vector3 ToVec3CustomZ(this Vector3 vec3, float z)
+	public static Vector3 WithZ(this Vector3 vec3, float z)
 	{
-		return new Vector3(vec3.x, vec3.y, z);	
+		return new Vector3(vec3.x, vec3.y, z);
+	}
+	public static Vector3 WithY(this Vector3 vec3, float y)
+	{
+		return new Vector3(vec3.x, y, vec3.z);
 	}
 	public static Vector3 WithZ(this Vector2 vec2, float z)
 	{
