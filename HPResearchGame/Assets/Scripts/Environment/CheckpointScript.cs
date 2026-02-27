@@ -3,81 +3,88 @@ using UnityEngine.InputSystem;
 
 public class CampfireScript : MonoBehaviour
 {
-    bool playerInRange = false;
+	bool playerInRange = false;
 
-    PlayerController player;
+	PlayerController player;
 
-    InputAction restAction;
-    InputAction levelUpAction;
+	InputAction restAction;
+	InputAction levelUpAction;
 
-    [SerializeField] AnimationClip campfireAnimation;
-    [SerializeField] AnimationClip highlightedCampfireAnimation;
+	[SerializeField] AnimationClip campfireAnimation;
+	[SerializeField] AnimationClip highlightedCampfireAnimation;
 
-    Animator animator;
+	Animator animator;
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
-    {
-        restAction = InputSystem.actions.FindAction(GlobalConstants.interactInputActionName);    
-        levelUpAction = InputSystem.actions.FindAction(GlobalConstants.interact2InputActionName);    
+	{
+		restAction = InputSystem.actions.FindAction(GlobalConstants.interactInputActionName);
+		levelUpAction = InputSystem.actions.FindAction(GlobalConstants.interact2InputActionName);
 
-        animator = GetComponent<Animator>();
+		animator = GetComponent<Animator>();
 	}
 
-    // Update is called once per frame
-    void Update()
-    {
+	// Update is called once per frame
+	void Update()
+	{
+		if (player != null && player.IsInCombat)
+		{
+			GetComponent<Collider2D>().enabled = false;
+			return;
+		}
+		else
+			GetComponent<Collider2D>().enabled = true;
 
-        //TODO LevelUp is displayed in tooltip and available only after rest is triggered
-        if (playerInRange)
-        {
-            if (restAction.WasPressedThisFrame())
-                Rest();
-            if (levelUpAction.WasPressedThisFrame())
-                LevelUp();
+		//TODO LevelUp is displayed in tooltip and available only after rest is triggered
+		if (playerInRange && !player.IsInCombat)
+		{
+			if (restAction.WasPressedThisFrame())
+				Rest();
+			if (levelUpAction.WasPressedThisFrame())
+				LevelUp();
 		}
 	}
 
-    void PlayerEntered()
-    {
-        playerInRange = true;
+	void PlayerEntered()
+	{
+		playerInRange = true;
 
-        //UI Instruction to press E to rest
+		//UI Instruction to press E to rest
 		HUD.Instance.ShowControlsPopUp(HUD.ControlsPopUpType.Heal);
 
 		//UI Instruction to press F to level up
-        if (player.CanLevelUp())
-        {
-            HUD.Instance.ShowControlsPopUp(HUD.ControlsPopUpType.LevelUp);
+		if (player.CanLevelUp())
+		{
+			HUD.Instance.ShowControlsPopUp(HUD.ControlsPopUpType.LevelUp);
 		}
 
-        animator.Play(highlightedCampfireAnimation.name);
+		animator.Play(highlightedCampfireAnimation.name);
 	}
 
-    void PlayerLeft()
-    {
+	void PlayerLeft()
+	{
 		playerInRange = false;
-        HUD.Instance.HideControlsPopUp(HUD.ControlsPopUpType.Heal);
-        HUD.Instance.HideControlsPopUp(HUD.ControlsPopUpType.LevelUp);
+		HUD.Instance.HideControlsPopUp(HUD.ControlsPopUpType.Heal);
+		HUD.Instance.HideControlsPopUp(HUD.ControlsPopUpType.LevelUp);
 
-        animator.Play(campfireAnimation.name);
+		animator.Play(campfireAnimation.name);
 	}
 
 	void Rest()
-    {
-        if (player == null)
-        {
-            Debug.LogError("Cannot rest at checkpoint, because the player is null!");
-            return;
+	{
+		if (player == null)
+		{
+			Debug.LogError("Cannot rest at checkpoint, because the player is null!");
+			return;
 		}
 
-        player.RestAtCheckpoint();
-        GameManager.Instance.RespawnAllEnemies();
-        GameManager.Instance.RespawnAllDestructible();
+		player.RestAtCheckpoint();
+		GameManager.Instance.RespawnAllEnemies();
+		GameManager.Instance.RespawnAllDestructible();
 	}
 
-    void LevelUp()
-    {
+	void LevelUp()
+	{
 		if (player == null)
 		{
 			Debug.LogError("Cannot levelUp at checkpoint, because the player is null!");
@@ -89,20 +96,21 @@ public class CampfireScript : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-        if (collision.CompareTag("Player"))
-        {
-            if (collision.TryGetComponent(out player))
-            {
-			    PlayerEntered();
+		if (collision.CompareTag("Player"))
+		{
+			if (collision.TryGetComponent(out player))
+			{
+				if (!player.IsInCombat)
+					PlayerEntered();
 			}
-        }
+		}
 	}
 
 	private void OnTriggerExit2D(Collider2D collision)
-    {
+	{
 		if (collision.CompareTag("Player"))
 		{
-            PlayerLeft();
+			PlayerLeft();
 		}
 	}
 
