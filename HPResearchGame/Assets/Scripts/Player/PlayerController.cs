@@ -146,7 +146,9 @@ public class PlayerController : MonoBehaviour
 		currentHP = maxHP;
 		currentHealItemCount = maxHealItemCount;
 
-		HUD.Instance.UpdateHealthBar(currentHP, maxHP);
+		this.CallWithDelay(() =>
+			HUD.Instance.UpdateHealthBar(currentHP, maxHP), 
+			.1f);
 	}
 
 	// Update is called once per frame
@@ -165,7 +167,6 @@ public class PlayerController : MonoBehaviour
 			InitiateAttack();
 
 		//Heal item use check
-		//TODO: add usage time for healing item and animation
 		if (useHealAction.triggered)
 			UseHealItem();
 
@@ -588,8 +589,14 @@ public class PlayerController : MonoBehaviour
 	#region Environment interaction
 	public void DestructibleObjectDestroyed(DestructibleScript destroyedObject)
 	{
-		Debug.Log("Player notified of destructible object destruction");
-		//TODO: add a chance to drop a heal item on destruction or something like that
+		if (GameManager.Instance.CurHPRegenApproach != HPRegenApproach.BloodborneItems)
+			return;
+
+		float randomFloat = Random.Range(0f, 1f);
+		if (randomFloat <= destroyedObject.chanceToDropHealItem)
+		{
+			AddHealItem();
+		}
 	}
 	#endregion
 }

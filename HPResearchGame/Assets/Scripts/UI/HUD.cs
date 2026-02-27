@@ -14,7 +14,10 @@ public class HUD : MonoSingleton<HUD>
 	[SerializeField] Slider healthBar;
 	[SerializeField] HeartGroupUI heartGroup;
 	[SerializeField] BloodyScreens bloodyScreens;
-	[SerializeField] TextMeshProUGUI healItemCountLabel;
+	[SerializeField] GameObject healItemDS;
+	[SerializeField] GameObject healItemBB;
+	[SerializeField] TextMeshProUGUI healItemCountLabelDS;
+	[SerializeField] TextMeshProUGUI healItemCountLabelBB;
 
 	[Header("CD")]
 	[SerializeField] Slider attackCDBar;
@@ -45,53 +48,113 @@ public class HUD : MonoSingleton<HUD>
 		LevelUp
 	}
 
+	private void Start()
+	{
+		GameManager.Instance.onHPShowApproachChange.AddListener(HPShowApproachChange);
+		GameManager.Instance.onHPRegenApproachChange.AddListener(HPRegenApproachChange);
+		HPShowApproachChange();
+		HPRegenApproachChange();
+	}
 
+	void HPShowApproachChange()
+	{
+		switch (GameManager.Instance.CurHPShowApproach)
+		{
+			case HPShowApproach.EldenRing:
+				healthBar.gameObject.SetActive(true);
+				heartGroup.gameObject.SetActive(false);
+				bloodyScreens.gameObject.SetActive(false);
+				break;
+			case HPShowApproach.HollowKnight:
+				healthBar.gameObject.SetActive(false);
+				heartGroup.gameObject.SetActive(true);
+				bloodyScreens.gameObject.SetActive(false);
+				break;
+			case HPShowApproach.SilentHill:
+				healthBar.gameObject.SetActive(false);
+				heartGroup.gameObject.SetActive(false);
+				bloodyScreens.gameObject.SetActive(true);
+				break;
+			default:
+				Debug.LogError("Invalid HP show approach");
+				break;
+		}
+	}
+
+	void HPRegenApproachChange()
+	{
+		switch (GameManager.Instance.CurHPRegenApproach)
+		{
+			case HPRegenApproach.OverTime:
+			case HPRegenApproach.BloodBorneRally:
+			case HPRegenApproach.PickUp:
+				healItemDS.SetActive(false);
+				healItemBB.SetActive(false);
+				break;
+			case HPRegenApproach.DarkSoulsItems:
+				healItemDS.SetActive(true);
+				healItemBB.SetActive(false);
+				break;
+			case HPRegenApproach.BloodborneItems:
+				healItemDS.SetActive(false);
+				healItemBB.SetActive(true);
+				break;
+			default:
+				Debug.LogError("Invalid HP regen approach");
+				break;
+		}
+	}
+
+
+	#region HP Show Approaches
 	public void UpdateHealthBar(float curHealth, float maxHealth)
 	{
 		//Elden ring approach
-		//healthBar.value = curHealth/maxHealth;
-		//healthBar.gameObject.GetComponent<RectTransform>().anchorMax = new Vector2(maxHealth/(float)maxHealthThreshold, 1);
+		if (GameManager.Instance.CurHPShowApproach == HPShowApproach.EldenRing)
+		{
+			healthBar.value = curHealth / maxHealth;
+			healthBar.gameObject.GetComponent<RectTransform>().anchorMax = new Vector2(maxHealth / (float)maxHealthThreshold, 1);
+		}
 
 		//Hollow knight approach
-		//heartGroup.UpdateHealth((int)curHealth, (int)maxHealth);
+		else if (GameManager.Instance.CurHPShowApproach == HPShowApproach.HollowKnight)
+			heartGroup.UpdateHealth((int)curHealth, (int)maxHealth);
 
 		//Silent Hill approach
-		bloodyScreens.UpdateHealth(curHealth, maxHealth);
+		else if (GameManager.Instance.CurHPShowApproach == HPShowApproach.SilentHill)
+			bloodyScreens.UpdateHealth(curHealth, maxHealth);
 
 	}
 
-	public void StartAttackCDBarRegen(float regenDuration)
-	{
-		attackCDBar.value = 0;
-		attackCDBar.DOValue(1, regenDuration);
-	}
-	public void StartRollCDBarRegen(float regenDuration)
-	{
-		rollCDBar.value = 0;
-		rollCDBar.DOValue(1, regenDuration);
-	}
+	#endregion
 
-	public void UpdateXPBar(float xpPercentage)
-	{
-		xpBar.value = xpPercentage;
-	}
-	public void UpdateLevelLabel(int level)
-	{
-		levelLabel.text = $"{level}";
-	}
+
+	#region HP Regen Approaches
 	public void UpdateHealItemCount(int count)
 	{
-		healItemCountLabel.text = $"{count}";
+		if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.DarkSoulsItems)
+			healItemCountLabelDS.text = $"{count}";
+		else if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.BloodborneItems)
+			healItemCountLabelBB.text = $"{count}";
 	}
 	public void AddHealItem()
 	{
-		healItemCountLabel.text = $"{int.Parse(healItemCountLabel.text) + 1}";
+		if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.DarkSoulsItems)
+			healItemCountLabelDS.text = $"{int.Parse(healItemCountLabelDS.text) + 1}";
+		else if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.BloodborneItems)
+			healItemCountLabelBB.text = $"{int.Parse(healItemCountLabelBB.text) + 1}";
 	}
 	public void RemoveHealItem()
 	{
-		healItemCountLabel.text = $"{int.Parse(healItemCountLabel.text) - 1}";
+		if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.DarkSoulsItems)
+			healItemCountLabelDS.text = $"{int.Parse(healItemCountLabelDS.text) - 1}";
+		else if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.BloodborneItems)
+			healItemCountLabelBB.text = $"{int.Parse(healItemCountLabelBB.text) - 1}";
 	}
 
+	#endregion
+
+	#region Other UI Elements
 	public void ShowControlsPopUp(ControlsPopUpType type)
 	{
 		string popUpName = controlsPopUpNames[type];
@@ -118,4 +181,25 @@ public class HUD : MonoSingleton<HUD>
 			Debug.LogError($"No pop-up found with the name {popUpName}");
 		}
 	}
+
+	public void StartAttackCDBarRegen(float regenDuration)
+	{
+		attackCDBar.value = 0;
+		attackCDBar.DOValue(1, regenDuration);
+	}
+	public void StartRollCDBarRegen(float regenDuration)
+	{
+		rollCDBar.value = 0;
+		rollCDBar.DOValue(1, regenDuration);
+	}
+
+	public void UpdateXPBar(float xpPercentage)
+	{
+		xpBar.value = xpPercentage;
+	}
+	public void UpdateLevelLabel(int level)
+	{
+		levelLabel.text = $"{level}";
+	}
+	#endregion
 }

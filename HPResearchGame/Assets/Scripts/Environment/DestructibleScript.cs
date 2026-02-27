@@ -6,7 +6,9 @@ public class DestructibleScript : MonoBehaviour
     const string animDestroyTrigger = "Destroyed";
     const string animRespawnTrigger = "Respawn";
 
-    int hitPoints = 2;
+    public float chanceToDropHealItem = 0.3f;
+
+	int hitPoints = 2;
 
     Animator animator;
     Collider2D collider;
