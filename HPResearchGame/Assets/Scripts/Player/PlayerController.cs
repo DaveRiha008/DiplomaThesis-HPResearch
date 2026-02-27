@@ -543,7 +543,10 @@ public class PlayerController : MonoBehaviour
 	public void RestAtCheckpoint()
 	{
 		FullHeal();
-		RestoreHealItems();
+
+		if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.DarkSoulsItems)
+			RestoreHealItems();
+		
 		respawnLocation = transform.position;
 	}
 
