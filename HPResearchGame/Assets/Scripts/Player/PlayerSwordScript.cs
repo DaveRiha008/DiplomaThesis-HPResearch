@@ -28,7 +28,7 @@ public class PlayerSwordScript : MonoBehaviour
         if (animator == null)
             animator = GetComponent<Animator>();
 
-        Vector3 rotation = Quaternion.FromToRotation(VecConvert.ToVec3CustomZ(Vector2.down, 0f), VecConvert.ToVec3CustomZ(mouseOffset, 0f)).eulerAngles;
+        Vector3 rotation = Quaternion.FromToRotation(Vector2.down.WithZ(0f), mouseOffset.WithZ(0f)).eulerAngles;
         transform.parent.rotation = Quaternion.Euler(rotation);
 
         animator.SetFloat(animAttackSpeedID, attackSpeed);

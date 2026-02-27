@@ -41,7 +41,7 @@ public class CameraFollowPlayer : MonoBehaviour
 		//Debug.Log($"Screen center: {screenCenter}");
 
         //Primary target is the player
-        Vector2 targetPos = VecConvert.ToVec2(playerObject.transform.position);
+        Vector2 targetPos = playerObject.transform.position.ToVec2();
 
 		//Get the mouse offset from center
 		currentMouseOffset = mousePos - screenCenter;
@@ -59,7 +59,7 @@ public class CameraFollowPlayer : MonoBehaviour
         //Always kill the tween from last loop
         transform.DOKill();
         //Tween the position to the new one to make it look more smooth
-        transform.DOMove(VecConvert.ToVec3CustomZ(targetPos, transform.position.z), moveTweenDuration).SetEase(Ease.Linear);
+        transform.DOMove(targetPos.WithZ(transform.position.z), moveTweenDuration).SetEase(Ease.Linear);
 
     }
 }
