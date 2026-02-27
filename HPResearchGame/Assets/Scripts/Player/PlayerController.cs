@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour
 	[Tooltip("Color of the eye frame effect")]
 	Color eyeFrameColorChange = Color.green;
 
-	[Header("Attack variables")]
+	[Header("Combat variables")]
 
 	[SerializeField]
 	[Tooltip("Exact duration of the attack animation")]
@@ -76,6 +76,9 @@ public class PlayerController : MonoBehaviour
 	float maxHP = 10;
 	float currentHP;
 	Vector3 respawnLocation;
+	/// <summary>List of enemies following the player -> defines combat</summary>
+	public List<EnemyController> enemiesFollowing = new();
+	public bool IsInCombat { get => enemiesFollowing.Count > 0; }
 
 	[Header("Healing variables")]
 	[SerializeField]
@@ -83,8 +86,11 @@ public class PlayerController : MonoBehaviour
 	int currentHealItemCount = 0;
 	int healAmountFromHealItem = 5;
 	float healItemUseDuration = 0.5f;
-	float healItemUseStarted = 0f;
 	bool isUsingHealItem = false;
+
+	[SerializeField]
+	float healthRegenPerSecond = .5f;
+
 	[SerializeField]
 	Sprite usingHealItemSprite;
 
@@ -169,6 +175,13 @@ public class PlayerController : MonoBehaviour
 		//Heal item use check
 		if (useHealAction.triggered)
 			UseHealItem();
+
+		//Passive health regen approach
+		if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.OverTime && !IsInCombat)
+		{
+			Heal(healthRegenPerSecond * Time.deltaTime, silent:true);
+		}
+
 
 		//Move every frame -> idle if nothing is pressed
 		Move(moveAction.ReadValue<Vector2>());
@@ -526,12 +539,13 @@ public class PlayerController : MonoBehaviour
 
 	#region HEALING
 
-	public void Heal(int healAmount)
+	public void Heal(float healAmount, bool silent = false)
 	{
 		currentHP = Mathf.Min(currentHP + healAmount, maxHP);
 		HUD.Instance.UpdateHealthBar(currentHP, maxHP);
 		//Show heal amount
-		UIFlashingElements.ShowFlashingText(transform, $"+{healAmount}", Color.green);
+		if (!silent)
+			UIFlashingElements.ShowFlashingText(transform, $"+{healAmount}", Color.green);
 	}
 
 	public void FullHeal()
@@ -576,7 +590,6 @@ public class PlayerController : MonoBehaviour
 		Heal(healAmountFromHealItem);
 
 		isUsingHealItem = true;
-		healItemUseStarted = Time.time;
 		TweenUseHealItem();
 	}
 

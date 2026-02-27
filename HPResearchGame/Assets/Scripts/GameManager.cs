@@ -27,7 +27,7 @@ class GameManager : MonoSingleton<GameManager>
 	private void Start()
 	{
 		CurHPShowApproach = HPShowApproach.HollowKnight;
-		CurHPRegenApproach = HPRegenApproach.PickUp;
+		CurHPRegenApproach = HPRegenApproach.OverTime;
 	}
 
 	public void RespawnAllEnemies()

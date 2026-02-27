@@ -72,6 +72,7 @@ public class EnemyController : MonoBehaviour
 	PublicCollisionEvents awarenessArea;
     [SerializeField]
     Animator corpseAnimator;
+    PlayerController targetPlayer;
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
@@ -94,7 +95,8 @@ public class EnemyController : MonoBehaviour
 
         originalColor = sr.color;
         originalLocation = transform.position;
-    }
+        targetPlayer = target.GetComponent<PlayerController>();
+	}
 
     // Update is called once per frame
     void Update()
@@ -227,6 +229,8 @@ public class EnemyController : MonoBehaviour
     {
         sr.DOKill(); //Stop any ongoing tweens on the SpriteRenderer to avoid null reference issues
         TriggerCorpseAnimation();
+
+        RemoveMyselfFromPlayerFollowingList();
         
         //Finish the attack, so it doesn't carry on the flags to respawn
         AttackEnd();
@@ -325,7 +329,6 @@ public class EnemyController : MonoBehaviour
     void TargetEnteredAwareness()
     {
         targetInAwareness = true;
-		curEnemyState = EnemyState.Following;
 	}
 
     void TargetExitedAwareness()
@@ -343,7 +346,10 @@ public class EnemyController : MonoBehaviour
 		//If the target is in awareness or the enemy recently attacked, keep following
 		if (targetInAwareness || timeSinceLastAttack < timeToForgetTarget)
         {
-            curEnemyState = EnemyState.Following;
+		    curEnemyState = EnemyState.Following;
+
+            AddMyselfToPlayerFollowingList();
+
             return;
         }
 
@@ -352,6 +358,8 @@ public class EnemyController : MonoBehaviour
         {
             curEnemyState = EnemyState.Idle;
             timeStartedIdling = Time.time;
+            
+            RemoveMyselfFromPlayerFollowingList();
 			return;
 		}
 
@@ -372,9 +380,22 @@ public class EnemyController : MonoBehaviour
 
 	}
 
+    void AddMyselfToPlayerFollowingList()
+    {
+		if (targetPlayer == null || targetPlayer.enemiesFollowing.Contains(this))
+			return;
+		targetPlayer.enemiesFollowing.Add(this);
+	}
+
+    void RemoveMyselfFromPlayerFollowingList()
+    {
+        if (targetPlayer != null && targetPlayer.enemiesFollowing.Contains(this))
+			targetPlayer.enemiesFollowing.Remove(this);
+	}
+
 	#endregion
 
-    enum EnemyState
+	enum EnemyState
     {
         Idle,
         Following,
