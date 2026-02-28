@@ -15,6 +15,8 @@ public class CampfireScript : MonoBehaviour
 
 	Animator animator;
 
+	bool rested = false;
+
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
 	{
@@ -35,12 +37,11 @@ public class CampfireScript : MonoBehaviour
 		else
 			GetComponent<Collider2D>().enabled = true;
 
-		//TODO LevelUp is displayed in tooltip and available only after rest is triggered
 		if (playerInRange && !player.IsInCombat)
 		{
 			if (restAction.WasPressedThisFrame())
 				Rest();
-			if (levelUpAction.WasPressedThisFrame())
+			if (levelUpAction.WasPressedThisFrame() && rested)
 				LevelUp();
 		}
 	}
@@ -48,21 +49,18 @@ public class CampfireScript : MonoBehaviour
 	void PlayerEntered()
 	{
 		playerInRange = true;
+		rested = false;
 
 		//UI Instruction to press E to rest
 		HUD.Instance.ShowControlsPopUp(HUD.ControlsPopUpType.Heal);
-
-		//UI Instruction to press F to level up
-		if (player.CanLevelUp())
-		{
-			HUD.Instance.ShowControlsPopUp(HUD.ControlsPopUpType.LevelUp);
-		}
 
 		animator.Play(highlightedCampfireAnimation.name);
 	}
 
 	void PlayerLeft()
 	{
+		rested = false;
+
 		playerInRange = false;
 		HUD.Instance.HideControlsPopUp(HUD.ControlsPopUpType.Heal);
 		HUD.Instance.HideControlsPopUp(HUD.ControlsPopUpType.LevelUp);
@@ -79,6 +77,14 @@ public class CampfireScript : MonoBehaviour
 		}
 
 		player.RestAtCheckpoint();
+
+		rested = true;
+		//UI Instruction to press F to level up
+		if (player.CanLevelUp())
+		{
+			HUD.Instance.ShowControlsPopUp(HUD.ControlsPopUpType.LevelUp);
+		}
+
 		GameManager.Instance.RespawnAllEnemies();
 		GameManager.Instance.RespawnAllDestructible();
 	}
