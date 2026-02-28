@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class HUD : MonoSingleton<HUD>
@@ -36,6 +37,8 @@ public class HUD : MonoSingleton<HUD>
 
 	[Header("Controls")]
 	[SerializeField] GameObject controlsPopUpParent;
+	[SerializeField] GameObject controls;
+	InputAction toggleOptionsAction;
 
 	/// <summary>
 	/// Dictionary to store the names of the controls pop-ups, so that they can be easily accessed and changed in one place if needed.
@@ -60,6 +63,14 @@ public class HUD : MonoSingleton<HUD>
 		GameManager.Instance.onHPRegenApproachChange.AddListener(HPRegenApproachChange);
 		HPShowApproachChange();
 		HPRegenApproachChange();
+
+		toggleOptionsAction = InputSystem.actions.FindAction(GlobalConstants.toggleOptionsInputActionName);
+	}
+
+	private void Update()
+	{
+		if (toggleOptionsAction.WasPressedThisFrame())
+			ToggleControls();
 	}
 
 	void HPShowApproachChange()
@@ -221,6 +232,18 @@ public class HUD : MonoSingleton<HUD>
 	public void HideRallyIcon()
 	{
 		rallyIcon.color = rallyIcon.color.WithAlpha(0);
+	}
+
+	void ToggleControls()
+	{
+		if (controls.activeSelf)
+		{
+			controls.SetActive(false);
+		}
+		else
+		{
+			controls.SetActive(true);
+		}
 	}
 	#endregion
 }

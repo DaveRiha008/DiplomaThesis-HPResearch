@@ -64,6 +64,20 @@ class GameManager : MonoSingleton<GameManager>
 		CurHPRegenApproach = newApproach;
 		onHPRegenApproachChange.Invoke();
 	}
+
+	public static void PauseGame()
+	{
+		Time.timeScale = 0f;
+	}
+	public static void ResumeGame()
+	{
+		Time.timeScale = 1f;
+	}
+
+	public static void QuitGame()
+	{
+		Application.Quit();
+	}	
 }
 
 public enum HPShowApproach { 	
