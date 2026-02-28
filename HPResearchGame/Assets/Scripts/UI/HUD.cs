@@ -40,6 +40,9 @@ public class HUD : MonoSingleton<HUD>
 	[SerializeField] GameObject controls;
 	InputAction toggleOptionsAction;
 
+	[Header("Menu")]
+	[SerializeField] GameObject menu;
+
 	/// <summary>
 	/// Dictionary to store the names of the controls pop-ups, so that they can be easily accessed and changed in one place if needed.
 	/// </summary>
@@ -237,13 +240,41 @@ public class HUD : MonoSingleton<HUD>
 	void ToggleControls()
 	{
 		if (controls.activeSelf)
+			HideControls();
+		else
+			ShowControls();
+	}
+
+	void ShowControls()
+	{
+		controls.SetActive(true);
+	}
+	void HideControls()
+	{
+		controls.SetActive(false);
+	}
+
+	public void ToggleMenu()
+	{
+		if (menu.activeSelf)
 		{
-			controls.SetActive(false);
+			HideMenu(); ;
 		}
 		else
 		{
-			controls.SetActive(true);
+			ShowMenu();
 		}
+	}
+	public void ShowMenu()
+	{
+		ShowControls();
+		menu.SetActive(true);
+	}
+
+	public void HideMenu()
+	{
+		HideControls();
+		menu.SetActive(false);
 	}
 	#endregion
 }
