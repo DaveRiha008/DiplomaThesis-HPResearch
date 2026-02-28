@@ -14,6 +14,7 @@ public class HUD : MonoSingleton<HUD>
 	[SerializeField] Slider healthBar;
 	[SerializeField] HeartGroupUI heartGroup;
 	[SerializeField] BloodyScreens bloodyScreens;
+	[SerializeField] Image rallyIcon;
 	[SerializeField] GameObject healItemDS;
 	[SerializeField] GameObject healItemBB;
 	[SerializeField] TextMeshProUGUI healItemCountLabelDS;
@@ -35,7 +36,6 @@ public class HUD : MonoSingleton<HUD>
 
 	[Header("Controls")]
 	[SerializeField] GameObject controlsPopUpParent;
-
 
 	/// <summary>
 	/// Dictionary to store the names of the controls pop-ups, so that they can be easily accessed and changed in one place if needed.
@@ -206,6 +206,21 @@ public class HUD : MonoSingleton<HUD>
 	public void UpdateLevelLabel(int level)
 	{
 		levelLabel.text = $"{level}";
+	}
+
+	public void ShowRallyIcon()
+	{
+		rallyIcon.color = rallyIcon.color.WithAlpha(1);
+	}
+
+	public void UpdateRallyIcon(float alpha)
+	{
+		rallyIcon.color = rallyIcon.color.WithAlpha(alpha);
+	}
+
+	public void HideRallyIcon()
+	{
+		rallyIcon.color = rallyIcon.color.WithAlpha(0);
 	}
 	#endregion
 }

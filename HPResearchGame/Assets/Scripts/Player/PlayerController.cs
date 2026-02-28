@@ -87,6 +87,10 @@ public class PlayerController : MonoBehaviour
 	int healAmountFromHealItem = 5;
 	float healItemUseDuration = 0.5f;
 	bool isUsingHealItem = false;
+	float rallyDuration = .5f;
+	float rallyStarted = 0f;
+	bool isRallyActive = false;
+	float rallyHealAmount = 1f;
 
 	[SerializeField]
 	float healthRegenPerSecond = .5f;
@@ -181,6 +185,12 @@ public class PlayerController : MonoBehaviour
 		{
 			Heal(healthRegenPerSecond * Time.deltaTime, silent:true);
 		}
+		//Bloodborne rally approach
+		if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.BloodBorneRally)
+			UpdateRally();
+		else if (isRallyActive)
+			EndRally();
+
 
 
 		//Move every frame -> idle if nothing is pressed
@@ -375,6 +385,11 @@ public class PlayerController : MonoBehaviour
 	{
 		bool killed = enemy.GetHit(attackDamage);
 
+		if (isRallyActive)
+		{
+			Heal(rallyHealAmount);
+		}
+
 		//If the enemy was killed, add experience and possibly get heal item if that is the current approach
 		if (killed)
 		{
@@ -408,6 +423,9 @@ public class PlayerController : MonoBehaviour
 			Die();
 			return;
 		}
+
+		if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.BloodBorneRally)
+			StartRally();
 
 		HUD.Instance.UpdateHealthBar(currentHP, maxHP);
 
@@ -624,6 +642,35 @@ public class PlayerController : MonoBehaviour
 	{
 		currentHealItemCount = maxHealItemCount;
 		HUD.Instance.UpdateHealItemCount(maxHealItemCount);
+	}
+
+	void StartRally()
+	{
+		rallyStarted = Time.time;
+		HUD.Instance.ShowRallyIcon();
+		isRallyActive = true;
+	}
+
+	void UpdateRally()
+	{
+
+		float elapsed = Time.time - rallyStarted;
+		if (elapsed >= rallyDuration)
+		{
+			EndRally();
+		}
+		else
+		{
+			float alpha = 1 - .33f*(elapsed / rallyDuration);
+			HUD.Instance.UpdateRallyIcon(alpha);
+		}
+	}
+
+	void EndRally()
+	{
+		rallyStarted = 0f;
+		HUD.Instance.HideRallyIcon();
+		isRallyActive = false;
 	}
 
 	#endregion

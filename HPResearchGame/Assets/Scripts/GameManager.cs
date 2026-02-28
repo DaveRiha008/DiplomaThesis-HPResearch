@@ -32,7 +32,7 @@ class GameManager : MonoSingleton<GameManager>
 	private void Start()
 	{
 		CurHPShowApproach = HPShowApproach.HollowKnight;
-		CurHPRegenApproach = HPRegenApproach.OverTime;
+		CurHPRegenApproach = HPRegenApproach.BloodBorneRally;
 	}
 
 	private void Update()
