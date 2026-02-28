@@ -42,6 +42,7 @@ public class HUD : MonoSingleton<HUD>
 
 	[Header("Menu")]
 	[SerializeField] GameObject menu;
+	[SerializeField] PlayerStatsPanel playerStatsPanel;
 
 	/// <summary>
 	/// Dictionary to store the names of the controls pop-ups, so that they can be easily accessed and changed in one place if needed.
@@ -268,6 +269,7 @@ public class HUD : MonoSingleton<HUD>
 	public void ShowMenu()
 	{
 		ShowControls();
+		playerStatsPanel.MenuShown();
 		menu.SetActive(true);
 	}
 

@@ -687,4 +687,16 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 	#endregion
+
+	public PlayerStats GetPlayerStats()
+	{
+		return new PlayerStats(
+			curHealth: Mathf.FloorToInt(currentHP),
+			maxHealth: Mathf.FloorToInt(maxHP),
+			curExp: experiencePoints,
+			goalExp: currentLevel < ExperienceLevelThresholds.thresholds.Length ? ExperienceLevelThresholds.thresholds[currentLevel] : experiencePoints,
+			attack: attackDamage,
+			moveSpeed: moveSpeed
+			);
+	}
 }
