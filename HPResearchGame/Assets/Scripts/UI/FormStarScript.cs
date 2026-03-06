@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using TMPro;
 
 public class FormStarScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -95,15 +96,38 @@ public class FormStarScript : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 	public void Clicked()
     {
         bool previous = true;
+        int myRating = 0;
         foreach (FormStarScript star in otherStars)
         {
             if (previous)
+            {
                 star.Select();
+                myRating++;
+            }
             else
                 star.Deselect();
 			if (star == this)
                 previous = !previous;
 		}
+
+        //With my index as answer -> save the answer to the form script
+
+        TextMeshProUGUI parentTMPro = transform.parent.GetComponent<TextMeshProUGUI>();
+        if (parentTMPro == null)
+        {
+            Debug.LogError("Parent of star does not have TMPro, while it should be the question! -> won't record answer");
+            return;
+        }
+		string myQuestion = parentTMPro.text;
+        FormScript parentFormScript = parentTMPro.transform.parent.parent.GetComponent<FormScript>();
+		if (parentFormScript == null)
+		{
+			Debug.LogError("Grandparent of star does not have FormScript! -> won't record answer");
+			return;
+		}
+
+        Debug.Log("Recording answer to question " + myQuestion + " with rating " + myRating);
+        parentFormScript.RecordAnswer(myQuestion, myRating);
     }
 
 	public void Deselect()
