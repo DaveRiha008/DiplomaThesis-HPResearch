@@ -1,6 +1,7 @@
 using UnityEngine.Events;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 class GameManager : MonoSingleton<GameManager>
 {
@@ -8,6 +9,8 @@ class GameManager : MonoSingleton<GameManager>
 	public UnityEvent allEnemiesRespawn;
 	[HideInInspector]
 	public UnityEvent allDestructibleRespawn;
+	[HideInInspector]
+	public UnityEvent restartAll;
 
 	private HPShowApproach _curHPShowApproach;
 	public HPShowApproach CurHPShowApproach
@@ -34,14 +37,17 @@ class GameManager : MonoSingleton<GameManager>
 	[HideInInspector]
 	public UnityEvent onHPRegenApproachChange;
 
+	List<HPShowApproach> completedShowApproaches = new();
+	List<HPRegenApproach> completedRegenApproaches = new();
+
 	InputAction menuAction;
 
 	public bool menuActive = false;
 
 	private void Start()
 	{
-		CurHPShowApproach = HPShowApproach.HollowKnight;
-		CurHPRegenApproach = HPRegenApproach.BloodBorneRally;
+		CurHPShowApproach = GetRandomShowApproach();
+		CurHPRegenApproach = GetRandomRegenApproach();
 
 		menuAction = InputSystem.actions.FindAction(GlobalConstants.menuInputActionName);
 	}
@@ -79,6 +85,55 @@ class GameManager : MonoSingleton<GameManager>
 	{
 		CurHPRegenApproach = newApproach;
 		onHPRegenApproachChange.Invoke();
+	}
+
+	HPRegenApproach GetRandomRegenApproach()
+	{
+		List<HPRegenApproach> possibleApproaches = new();
+		foreach (HPRegenApproach approach in System.Enum.GetValues(typeof(HPRegenApproach)))
+		{
+			if (!completedRegenApproaches.Contains(approach))
+				possibleApproaches.Add(approach);
+		}
+		if (possibleApproaches.Count > 0)
+			return possibleApproaches[Random.Range(0, possibleApproaches.Count)];
+		else
+			return CurHPRegenApproach;
+	}
+	HPShowApproach GetRandomShowApproach()
+	{
+		List<HPShowApproach> possibleApproaches = new();
+		foreach (HPShowApproach approach in System.Enum.GetValues(typeof(HPShowApproach)))
+		{
+			if (!completedShowApproaches.Contains(approach))
+				possibleApproaches.Add(approach);
+		}
+		if (possibleApproaches.Count > 0)
+			return possibleApproaches[Random.Range(0, possibleApproaches.Count)];
+		else
+			return CurHPShowApproach;
+	}
+
+	public void ApproachFinished()
+	{
+		completedRegenApproaches.Add(CurHPRegenApproach);
+		completedShowApproaches.Add(CurHPShowApproach);
+
+		HUD.Instance.StartForm(CurHPShowApproach, CurHPRegenApproach);
+	}
+
+	public void FormFilled()
+	{
+		CurHPRegenApproach = GetRandomRegenApproach();
+		CurHPShowApproach = GetRandomShowApproach();
+		RestartGame();
+	}
+
+	void RestartGame()
+	{
+		RespawnAllEnemies();
+		RespawnAllDestructible();
+		restartAll.Invoke();
 	}
 
 	public static void PauseGame()

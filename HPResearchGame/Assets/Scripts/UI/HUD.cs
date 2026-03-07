@@ -44,6 +44,9 @@ public class HUD : MonoSingleton<HUD>
 	[SerializeField] GameObject menu;
 	[SerializeField] PlayerStatsPanel playerStatsPanel;
 
+	[Header("Form")]
+	[SerializeField] FormScript form;
+
 	/// <summary>
 	/// Dictionary to store the names of the controls pop-ups, so that they can be easily accessed and changed in one place if needed.
 	/// </summary>
@@ -277,6 +280,11 @@ public class HUD : MonoSingleton<HUD>
 	{
 		HideControls();
 		menu.SetActive(false);
+	}
+
+	public void StartForm(HPShowApproach showApp, HPRegenApproach regenApp)
+	{
+		form.Activate(showApp, regenApp);
 	}
 	#endregion
 }

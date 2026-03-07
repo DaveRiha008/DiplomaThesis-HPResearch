@@ -21,6 +21,20 @@ public class FormScript : MonoBehaviour
 
     }
 
+    public void Activate(HPShowApproach showApp, HPRegenApproach regenApp)
+    {
+        gameObject.SetActive(true);
+        foreach (FormStarScript star in transform.Find("Questions").GetComponentsInChildren<FormStarScript>())
+        {
+            star.Deselect();
+		}
+	}
+
+    public void Deactivate()
+    {
+        gameObject.SetActive(false);
+        questionAnswers.Clear();
+    }
 
 
     public void RecordAnswer(string question, int rating)
@@ -32,5 +46,7 @@ public class FormScript : MonoBehaviour
     {
         string jsonAnswers = JsonConvert.SerializeObject(questionAnswers);
         APIs.PostAnswersJSON(jsonAnswers, "www.endpoint.random");
+        Deactivate();
+        GameManager.Instance.FormFilled();
     }
 }

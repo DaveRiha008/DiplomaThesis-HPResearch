@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
 
 	[Header("Movement variables")]
 	public int moveSpeed = 10;
+	public int origMoveSpeed;
 
 	//Small offset to avoid getting stuck in walls due to precision errors
 	[SerializeField]
@@ -66,16 +67,22 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	[Tooltip("Exact duration of the attack animation")]
 	float attackDuration = 0.2f;
+	float origAttackDuration;
 	float attackStarted = 0f;
 	float attackCooldown = 0.2f;
+	float origAttackCooldown;
 	float attackLastUsed = -10f;
 	bool isAttacking = false;
 	[SerializeField]
 	int attackDamage = 1;
+	int origAttackDamage;
 	[SerializeField]
 	float maxHP = 10;
+	float origMaxHP;
 	float currentHP;
+
 	Vector3 respawnLocation;
+	Vector3 origRespawnLocation;
 	/// <summary>List of enemies following the player -> defines combat</summary>
 	public List<EnemyController> enemiesFollowing = new();
 	public bool IsInCombat { get => enemiesFollowing.Count > 0; }
@@ -137,28 +144,45 @@ public class PlayerController : MonoBehaviour
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
 	{
-		moveAction = InputSystem.actions.FindAction(GlobalConstants.moveInputActionName);
-		rollAction = InputSystem.actions.FindAction(GlobalConstants.rollInputActionName);
-		attackAction = InputSystem.actions.FindAction(GlobalConstants.attackInputActionName);
-		useHealAction = InputSystem.actions.FindAction(GlobalConstants.useHealInputActionName);
+		SetAllInputActions();
 
 		rb = gameObject.GetComponent<Rigidbody2D>();
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 		animator = gameObject.GetComponent<Animator>();
-
 		cameraFollow = Camera.main.GetComponent<CameraFollowPlayer>();
+		
 		playerSword.gameObject.SetActive(false);
-
-		origSpriteColor = spriteRenderer.color;
 
 		respawnLocation = transform.position;
 
 		currentHP = maxHP;
 		currentHealItemCount = maxHealItemCount;
 
+		SetAllOriginalFields();
+
 		this.CallWithDelay(() =>
 			HUD.Instance.UpdateHealthBar(currentHP, maxHP), 
 			.1f);
+
+		GameManager.Instance.restartAll.AddListener(ResetAllStats);
+	}
+	void SetAllInputActions()
+	{
+		moveAction = InputSystem.actions.FindAction(GlobalConstants.moveInputActionName);
+		rollAction = InputSystem.actions.FindAction(GlobalConstants.rollInputActionName);
+		attackAction = InputSystem.actions.FindAction(GlobalConstants.attackInputActionName);
+		useHealAction = InputSystem.actions.FindAction(GlobalConstants.useHealInputActionName);
+	}
+
+	void SetAllOriginalFields()
+	{
+		origSpriteColor = spriteRenderer.color;
+		origMoveSpeed = moveSpeed;
+		origAttackDuration = attackDuration;
+		origAttackCooldown = attackCooldown;
+		origAttackDamage = attackDamage;
+		origMaxHP = maxHP;
+		origRespawnLocation = respawnLocation;
 	}
 
 	// Update is called once per frame
@@ -698,5 +722,24 @@ public class PlayerController : MonoBehaviour
 			attack: attackDamage,
 			moveSpeed: moveSpeed
 			);
+	}
+
+	void ResetAllStats()
+	{
+		attackCooldown = origAttackCooldown;
+		attackDamage = origAttackDamage;
+		attackDuration = origAttackDuration;
+		maxHP = origMaxHP;
+		currentHP = origMaxHP;
+		HUD.Instance.UpdateHealthBar(currentHP, maxHP);
+		moveSpeed = origMoveSpeed;
+		respawnLocation = origRespawnLocation;
+		rb.position = origRespawnLocation;
+		experiencePoints = 0;
+		HUD.Instance.UpdateXPBar(experiencePoints);
+		currentLevel = 0;
+		HUD.Instance.UpdateLevelLabel(currentLevel+1);
+		currentHealItemCount = maxHealItemCount;
+		HUD.Instance.UpdateHealItemCount(maxHealItemCount);
 	}
 }
