@@ -1,5 +1,5 @@
 ssh root@172.104.240.193
-
+pass: DiplomaThesis123
 
 test:
 curl.exe -X POST "http://172.104.240.193:5000/log" -H "Content-Type: application/json" -d "{\"hello\":\"world\"}"

@@ -8,7 +8,7 @@ public class FormScript : MonoBehaviour
     [SerializeField] Button submitButton;
 
 
-    Dictionary<string, int> questionAnswers = new Dictionary<string, int>();
+    Dictionary<string, string> questionAnswers = new Dictionary<string, string>();
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -27,7 +27,7 @@ public class FormScript : MonoBehaviour
 
         //TODO: Load different questions based on approaches
 
-        foreach (FormStarScript star in transform.Find("Questions").GetComponentsInChildren<FormStarScript>())
+        foreach (IFormInteractable star in transform.Find("Questions").GetComponentsInChildren<IFormInteractable>())
         {
             star.LoadIn();
 		}
@@ -40,7 +40,7 @@ public class FormScript : MonoBehaviour
     }
 
 
-    public void RecordAnswer(string question, int rating)
+    public void RecordAnswer(string question, string rating)
     {
         questionAnswers[question] = rating;
     }
@@ -57,9 +57,6 @@ public class FormScript : MonoBehaviour
         data["Form answers"] = (jsonAnswers);
 
         string jsonData = JsonConvert.SerializeObject(data);
-
-        Dictionary<string, string> deserializedData= JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonData);
-        Dictionary<string, int> deserializedAnswers = JsonConvert.DeserializeObject<Dictionary<string, int>>(deserializedData["Form answers"]);
         
         GameManager.Instance.StartCoroutine(APIs.PostAnswersJSON(jsonData));
         Deactivate();

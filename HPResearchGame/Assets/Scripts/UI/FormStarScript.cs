@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
 
-public class FormStarScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class FormStarScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IFormInteractable
 {
     Image myImage;
 
@@ -40,8 +40,8 @@ public class FormStarScript : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
 		AssignParentFormAndQuestion();
 
-		//Initially record all answers as 0
-		parentForm.RecordAnswer(myQuestion, 0);
+		//Initially record all answers as empty
+		parentForm.RecordAnswer(myQuestion, "");
 
         Deselect();
 	}
@@ -155,8 +155,8 @@ public class FormStarScript : MonoBehaviour, IPointerEnterHandler, IPointerExitH
                 previous = !previous;
 		}
 
-		//Debug.Log("Recording answer to question " + myQuestion + " with rating " + myRating);
-		parentForm.RecordAnswer(myQuestion, myRating);
+        //Debug.Log("Recording answer to question " + myQuestion + " with rating " + myRating);
+        parentForm.RecordAnswer(myQuestion, myRating.ToString());
 
 	}
 
