@@ -8,4 +8,7 @@ public struct GlobalConstants
 	public const string useHealInputActionName = "UseHeal";
 	public const string toggleOptionsInputActionName = "ToggleOptions";
 	public const string menuInputActionName = "Menu";
+
+
+	public const string serverEndpoint = "http://172.104.240.193:5000/log";
 }

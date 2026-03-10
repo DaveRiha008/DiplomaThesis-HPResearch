@@ -24,9 +24,12 @@ public class FormScript : MonoBehaviour
     public void Activate(HPShowApproach showApp, HPRegenApproach regenApp)
     {
         gameObject.SetActive(true);
+
+        //TODO: Load different questions based on approaches
+
         foreach (FormStarScript star in transform.Find("Questions").GetComponentsInChildren<FormStarScript>())
         {
-            star.Deselect();
+            star.LoadIn();
 		}
 	}
 
@@ -44,8 +47,21 @@ public class FormScript : MonoBehaviour
 
     public void SubmitAnswers()
     {
+        Dictionary<string, string> data = new();
+        data["UserNickname"] = GameManager.Instance.Username;
+        data["HPRegenApproach"] = GameManager.Instance.CurHPRegenApproach.ToString();
+        data["HPShowApproach"] = GameManager.Instance.CurHPShowApproach.ToString();
+        data["Approaches done"] = GameManager.Instance.NumOfCompletedApproaches.ToString();
+        
         string jsonAnswers = JsonConvert.SerializeObject(questionAnswers);
-        APIs.PostAnswersJSON(jsonAnswers, "www.endpoint.random");
+        data["Form answers"] = (jsonAnswers);
+
+        string jsonData = JsonConvert.SerializeObject(data);
+
+        Dictionary<string, string> deserializedData= JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonData);
+        Dictionary<string, int> deserializedAnswers = JsonConvert.DeserializeObject<Dictionary<string, int>>(deserializedData["Form answers"]);
+        
+        GameManager.Instance.StartCoroutine(APIs.PostAnswersJSON(jsonData));
         Deactivate();
         GameManager.Instance.FormFilled();
     }

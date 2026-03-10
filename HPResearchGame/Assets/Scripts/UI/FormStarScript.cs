@@ -15,16 +15,59 @@ public class FormStarScript : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public bool selected = false;
 
 
-    FormStarScript[] otherStars;
+    FormStarScript[] allStarsForThisQuestion;
 
 	[SerializeField] Sprite activeSprite;
     [SerializeField] Sprite dormantSprite;
+
+
+    FormScript parentForm;
+    string myQuestion;
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
     {
-        myImage = GetComponent<Image>();
-        otherStars = transform.parent.GetComponentsInChildren<FormStarScript>();
+        LoadIn();
 	}
+
+    /// <summary>
+    /// Initializes component references, assigns parent form and question, records a default answer, and deselects the
+    /// current item.
+    /// </summary>
+    public void LoadIn()
+    {
+		myImage = GetComponent<Image>();
+		allStarsForThisQuestion = transform.parent.GetComponentsInChildren<FormStarScript>();
+
+		AssignParentFormAndQuestion();
+
+		//Initially record all answers as 0
+		parentForm.RecordAnswer(myQuestion, 0);
+
+        Deselect();
+	}
+
+	void AssignParentFormAndQuestion()
+    {
+		//With my index as answer -> save the answer to the form script
+
+		TextMeshProUGUI parentTMPro = transform.parent.GetComponent<TextMeshProUGUI>();
+		if (parentTMPro == null)
+		{
+			Debug.LogError("Parent of star does not have TMPro, while it should be the question! -> won't record answer");
+			return;
+		}
+		myQuestion = parentTMPro.text;
+
+		FormScript parentFormScript = parentTMPro.transform.parent.parent.GetComponent<FormScript>();
+		if (parentFormScript == null)
+		{
+			Debug.LogError("Grandparent of star does not have FormScript! -> won't record answer");
+			return;
+		}
+        parentForm = parentFormScript;
+
+	}
+
 
     // Update is called once per frame
     void Update()
@@ -38,7 +81,7 @@ public class FormStarScript : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         Hover();
 
 		// Activate all the stars up to and including this one
-		foreach (FormStarScript star in otherStars)
+		foreach (FormStarScript star in allStarsForThisQuestion)
         {
             if (star == this)
                 break;
@@ -55,7 +98,7 @@ public class FormStarScript : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void DeactivateUnselectedSprites()
     {
-        foreach (FormStarScript star in otherStars)
+        foreach (FormStarScript star in allStarsForThisQuestion)
         {
             if (!star.selected)
                 star.DeactivateSprite();
@@ -64,12 +107,14 @@ public class FormStarScript : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void ActivateSprite()
     {
-        myImage.sprite = activeSprite;
+		if (myImage != null)
+			myImage.sprite = activeSprite;
 	}
 
     public void DeactivateSprite()
     {
-        myImage.sprite = dormantSprite;
+        if (myImage != null)
+            myImage.sprite = dormantSprite;
 	}
 
     void Hover()
@@ -83,13 +128,13 @@ public class FormStarScript : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         mouseOver = false;
         if (selected)
             return;
-        myImage.sprite = dormantSprite;
+        DeactivateSprite();
 	}
 
     public void Select()
     {
         selected = true;
-        myImage.sprite = activeSprite;
+        ActivateSprite();
     }
 
 
@@ -97,7 +142,7 @@ public class FormStarScript : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         bool previous = true;
         int myRating = 0;
-        foreach (FormStarScript star in otherStars)
+        foreach (FormStarScript star in allStarsForThisQuestion)
         {
             if (previous)
             {
@@ -110,29 +155,14 @@ public class FormStarScript : MonoBehaviour, IPointerEnterHandler, IPointerExitH
                 previous = !previous;
 		}
 
-        //With my index as answer -> save the answer to the form script
+		//Debug.Log("Recording answer to question " + myQuestion + " with rating " + myRating);
+		parentForm.RecordAnswer(myQuestion, myRating);
 
-        TextMeshProUGUI parentTMPro = transform.parent.GetComponent<TextMeshProUGUI>();
-        if (parentTMPro == null)
-        {
-            Debug.LogError("Parent of star does not have TMPro, while it should be the question! -> won't record answer");
-            return;
-        }
-		string myQuestion = parentTMPro.text;
-        FormScript parentFormScript = parentTMPro.transform.parent.parent.GetComponent<FormScript>();
-		if (parentFormScript == null)
-		{
-			Debug.LogError("Grandparent of star does not have FormScript! -> won't record answer");
-			return;
-		}
-
-        Debug.Log("Recording answer to question " + myQuestion + " with rating " + myRating);
-        parentFormScript.RecordAnswer(myQuestion, myRating);
-    }
+	}
 
 	public void Deselect()
     {
         selected = false;
-        myImage.sprite = dormantSprite;
+        DeactivateSprite();
 	}
 }

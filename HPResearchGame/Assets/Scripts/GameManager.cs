@@ -2,6 +2,7 @@ using UnityEngine.Events;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using TMPro;
 
 class GameManager : MonoSingleton<GameManager>
 {
@@ -11,6 +12,9 @@ class GameManager : MonoSingleton<GameManager>
 	public UnityEvent allDestructibleRespawn;
 	[HideInInspector]
 	public UnityEvent restartAll;
+
+	string username = "TestUsername";
+	public string Username { get => username; }
 
 	private HPShowApproach _curHPShowApproach;
 	public HPShowApproach CurHPShowApproach
@@ -40,16 +44,23 @@ class GameManager : MonoSingleton<GameManager>
 	List<HPShowApproach> completedShowApproaches = new();
 	List<HPRegenApproach> completedRegenApproaches = new();
 
+	public int NumOfCompletedApproaches { get => Mathf.Max(completedShowApproaches.Count, completedRegenApproaches.Count); }
+
 	InputAction menuAction;
 
 	public bool menuActive = false;
 
+	public bool gameStarted = false;
+
 	private void Start()
 	{
+		PauseGame();
+
 		CurHPShowApproach = GetRandomShowApproach();
 		CurHPRegenApproach = GetRandomRegenApproach();
 
 		menuAction = InputSystem.actions.FindAction(GlobalConstants.menuInputActionName);
+
 	}
 
 	private void Update()
@@ -61,7 +72,7 @@ class GameManager : MonoSingleton<GameManager>
 			ChangeHPShowApproach((HPShowApproach)((int)(CurHPShowApproach + 1) % System.Enum.GetValues(typeof(HPShowApproach)).Length));
 		}
 
-		if (menuAction.WasPressedThisFrame())
+		if (menuAction.WasPressedThisFrame() && gameStarted)
 			ToggleMenu();
 	}
 
@@ -134,6 +145,13 @@ class GameManager : MonoSingleton<GameManager>
 		RespawnAllEnemies();
 		RespawnAllDestructible();
 		restartAll.Invoke();
+	}
+
+	public static void StartGame(TextMeshProUGUI inputUsername)
+	{
+		Instance.username = inputUsername.text;
+		Instance.gameStarted = true;
+		ResumeGame();
 	}
 
 	public static void PauseGame()
