@@ -382,15 +382,14 @@ public class EnemyController : MonoBehaviour
 
     void AddMyselfToPlayerFollowingList()
     {
-		if (targetPlayer == null || targetPlayer.enemiesFollowing.Contains(this))
-			return;
-		targetPlayer.enemiesFollowing.Add(this);
+		if (targetPlayer != null)
+			targetPlayer.AddFollowingEnemy(this);
 	}
 
     void RemoveMyselfFromPlayerFollowingList()
     {
-        if (targetPlayer != null && targetPlayer.enemiesFollowing.Contains(this))
-			targetPlayer.enemiesFollowing.Remove(this);
+        if (targetPlayer != null)
+            targetPlayer.RemoveFollowingEnemy(this);
 	}
 
 	#endregion

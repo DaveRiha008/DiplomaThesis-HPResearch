@@ -47,19 +47,8 @@ public class FormScript : MonoBehaviour
 
     public void SubmitAnswers()
     {
-        Dictionary<string, string> data = new();
-        data["UserNickname"] = GameManager.Instance.Username;
-        data["HPRegenApproach"] = GameManager.Instance.CurHPRegenApproach.ToString();
-        data["HPShowApproach"] = GameManager.Instance.CurHPShowApproach.ToString();
-        data["Approaches done"] = GameManager.Instance.NumOfCompletedApproaches.ToString();
+        GameManager.Instance.FormFilled(questionAnswers);
         
-        string jsonAnswers = JsonConvert.SerializeObject(questionAnswers);
-        data["Form answers"] = (jsonAnswers);
-
-        string jsonData = JsonConvert.SerializeObject(data);
-        
-        GameManager.Instance.StartCoroutine(APIs.PostAnswersJSON(jsonData));
         Deactivate();
-        GameManager.Instance.FormFilled();
     }
 }

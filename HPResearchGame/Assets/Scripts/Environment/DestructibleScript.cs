@@ -47,7 +47,7 @@ public class DestructibleScript : MonoBehaviour
     {
 		animator.SetTrigger(animDestroyTrigger);
         col.enabled = false;
-
+        DataCollectionManager.AddBoxBreakRecord(new () { timestamp = System.DateTime.Now });
 	}
 
 	public void Respawn()

@@ -411,6 +411,7 @@ public class PlayerController : MonoBehaviour
 
 		if (isRallyActive)
 		{
+			DataCollectionManager.AddHealRecord(new() { timestamp = System.DateTime.Now });
 			Heal(rallyHealAmount);
 		}
 
@@ -448,6 +449,10 @@ public class PlayerController : MonoBehaviour
 			return;
 		}
 
+		//Data collection of hit
+		DataCollectionManager.AddGetHitRecord(new GetHitData() { 
+			timestamp = System.DateTime.Now, fromHP = currentHP+damage, toHP = currentHP });
+
 		if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.BloodBorneRally)
 			StartRally();
 
@@ -469,6 +474,32 @@ public class PlayerController : MonoBehaviour
 
 		spriteRenderer.color = spriteRenderer.color.WithAlpha(0);
 		spriteRenderer.DOColor(origSpriteColor.WithAlpha(1), .8f);
+
+		DataCollectionManager.AddDeathRecord(new DeathData() { timestamp = System.DateTime.Now});
+	}
+
+	public void AddFollowingEnemy(EnemyController enemy)
+	{
+		if (!enemiesFollowing.Contains(enemy))
+		{
+			//Data collection -> possible start of combat
+			if (!IsInCombat)
+				CombatData.StartCombat();
+
+			enemiesFollowing.Add(enemy);
+		}
+	}
+
+	public void RemoveFollowingEnemy(EnemyController enemy)
+	{
+		if (enemiesFollowing.Contains(enemy))
+		{
+			enemiesFollowing.Remove(enemy);
+
+			//Data collection -> possible end of combat
+			if (!IsInCombat)
+				CombatData.StopCombat();
+		}
 	}
 
 	#endregion COMBAT
@@ -602,8 +633,10 @@ public class PlayerController : MonoBehaviour
 
 		if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.DarkSoulsItems)
 			RestoreHealItems();
-		
+
 		respawnLocation = transform.position;
+
+		DataCollectionManager.AddCheckpointRecord(new() { timestamp = System.DateTime.Now });
 	}
 
 	public bool CanUseHealItem()
@@ -633,6 +666,8 @@ public class PlayerController : MonoBehaviour
 
 		isUsingHealItem = true;
 		TweenUseHealItem();
+
+		DataCollectionManager.AddHealRecord(new() { timestamp = System.DateTime.Now });
 	}
 
 	void TweenUseHealItem()

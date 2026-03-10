@@ -79,6 +79,7 @@ public class PickUpHeal : MonoBehaviour
 			}
 
             player.Heal(HealAmount);
+            DataCollectionManager.AddHealRecord(new() { timestamp = System.DateTime.Now });
             Disappear();
         }
 	}

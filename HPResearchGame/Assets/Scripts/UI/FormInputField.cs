@@ -44,7 +44,8 @@ public class FormInputField : MonoBehaviour, IFormInteractable
 		//Initially record all answers as nothing
 		parentForm.RecordAnswer(myQuestion, "");
 
-		myInputField.text = string.Empty;
+		if (myInputField != null) 
+			myInputField.text = string.Empty;
     }
 
     // Update is called once per frame

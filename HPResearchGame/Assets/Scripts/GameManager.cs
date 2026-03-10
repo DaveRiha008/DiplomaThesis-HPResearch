@@ -1,8 +1,9 @@
-using UnityEngine.Events;
-using UnityEngine;
-using UnityEngine.InputSystem;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 class GameManager : MonoSingleton<GameManager>
 {
@@ -51,6 +52,8 @@ class GameManager : MonoSingleton<GameManager>
 	public bool menuActive = false;
 
 	public bool gameStarted = false;
+	public float gameTimeApproach = 0f;
+	public float gameTimeOverall = 0f;
 
 	private void Start()
 	{
@@ -74,6 +77,9 @@ class GameManager : MonoSingleton<GameManager>
 
 		if (menuAction.WasPressedThisFrame() && gameStarted)
 			ToggleMenu();
+
+		gameTimeOverall += Time.deltaTime;
+		gameTimeApproach += Time.deltaTime;
 	}
 
 	public void RespawnAllEnemies()
@@ -133,11 +139,34 @@ class GameManager : MonoSingleton<GameManager>
 		HUD.Instance.StartForm(CurHPShowApproach, CurHPRegenApproach);
 	}
 
-	public void FormFilled()
+	public void FormFilled(Dictionary<string, string> formAnswersJson)
 	{
+		SendEndOfApproachData(formAnswersJson);
+
+		gameTimeApproach = 0f;
 		CurHPRegenApproach = GetRandomRegenApproach();
 		CurHPShowApproach = GetRandomShowApproach();
 		RestartGame();
+	}
+
+	void SendEndOfApproachData(Dictionary<string, string> formAnswersJson)
+	{
+
+		DataCollectionManager.AddGameTimeRecord(new GameTimeData()
+		{ gameTimeApproach = gameTimeApproach, gameTimeOverall = gameTimeOverall });
+
+		Dictionary<string, object> data = new();
+		data["UserNickname"] = Username;
+		data["HPRegenApproach"] = CurHPRegenApproach.ToString();
+		data["HPShowApproach"] = CurHPShowApproach.ToString();
+		data["Approaches done"] = NumOfCompletedApproaches.ToString();
+
+		data["Form answers"] = formAnswersJson;
+		data["Game analytics"] = DataCollectionManager.GetData();
+		DataCollectionManager.ClearData();
+
+		string jsonData = JsonConvert.SerializeObject(data);
+		StartCoroutine(APIs.PostAnswersJSON(jsonData));
 	}
 
 	void RestartGame()

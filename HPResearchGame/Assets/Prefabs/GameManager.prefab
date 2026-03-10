@@ -44,4 +44,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 450a79f65d7246e40872694a0b607c1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  killedEnemies: []
+  allEnemiesRespawn:
+    m_PersistentCalls:
+      m_Calls: []
+  allDestructibleRespawn:
+    m_PersistentCalls:
+      m_Calls: []
+  restartAll:
+    m_PersistentCalls:
+      m_Calls: []
+  onHPShowApproachChange:
+    m_PersistentCalls:
+      m_Calls: []
+  onHPRegenApproachChange:
+    m_PersistentCalls:
+      m_Calls: []
+  menuActive: 0
+  gameStarted: 0
