@@ -15,10 +15,11 @@ public class DestructibleScript : MonoBehaviour
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
     {
-        GameManager.Instance.allDestructibleRespawn.AddListener(Respawn);
-
 		animator = GetComponent<Animator>();
         col = GetComponent<Collider2D>();
+
+        
+        GameManager.Instance.allDestructibleRespawn.AddListener(Respawn);
 	}
 
     // Update is called once per frame
