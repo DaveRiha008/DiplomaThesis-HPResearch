@@ -185,6 +185,13 @@ public class PlayerController : MonoBehaviour
 		origRespawnLocation = respawnLocation;
 	}
 
+	private void FixedUpdate()
+	{
+		//Move every frame -> idle if nothing is pressed
+		Move(moveAction.ReadValue<Vector2>());
+
+	}
+
 	// Update is called once per frame
 	void Update()
 	{
@@ -203,13 +210,6 @@ public class PlayerController : MonoBehaviour
 		//Heal item use check
 		if (useHealAction.triggered)
 			UseHealItem();
-
-		//Move every frame -> idle if nothing is pressed
-		Move(moveAction.ReadValue<Vector2>());
-
-
-		//FOR TESTING
-		if (GameManager.Instance == null) return;
 
 		//Passive health regen approach
 		if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.OverTime && !IsInCombat)
