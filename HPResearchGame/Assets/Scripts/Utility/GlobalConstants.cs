@@ -10,5 +10,6 @@ public struct GlobalConstants
 	public const string menuInputActionName = "Menu";
 
 
-	public const string serverEndpoint = "http://172.104.240.193:5000/log";
+	public const string serverEndpoint = "https://dejv-ma-velky-pero.brabec.tech/log";
+	//public const string serverEndpoint = "http://172.104.240.193:5000/log";
 }
