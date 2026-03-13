@@ -55,6 +55,9 @@ class GameManager : MonoSingleton<GameManager>
 	public float gameTimeApproach = 0f;
 	public float gameTimeOverall = 0f;
 
+	public float gameTimeLimitSeconds = 5 * 60;
+	bool fillingForm = false;
+
 	private void Start()
 	{
 		PauseGame();
@@ -80,6 +83,12 @@ class GameManager : MonoSingleton<GameManager>
 
 		gameTimeOverall += Time.deltaTime;
 		gameTimeApproach += Time.deltaTime;
+
+		//Timeout Check
+		if (gameTimeApproach > gameTimeLimitSeconds && !fillingForm)
+		{
+			ApproachFinished();
+		}
 	}
 
 	public void RespawnAllEnemies()
@@ -133,14 +142,18 @@ class GameManager : MonoSingleton<GameManager>
 
 	public void ApproachFinished()
 	{
+		PauseGame();
+
 		completedRegenApproaches.Add(CurHPRegenApproach);
 		completedShowApproaches.Add(CurHPShowApproach);
 
 		HUD.Instance.StartForm(CurHPShowApproach, CurHPRegenApproach);
+		fillingForm = true;
 	}
 
 	public void FormFilled(Dictionary<string, string> formAnswersJson)
 	{
+		fillingForm = false;
 		SendEndOfApproachData(formAnswersJson);
 
 		gameTimeApproach = 0f;
@@ -174,6 +187,7 @@ class GameManager : MonoSingleton<GameManager>
 		RespawnAllEnemies();
 		RespawnAllDestructible();
 		restartAll.Invoke();
+		ResumeGame();
 	}
 
 	public static void StartGame(TextMeshProUGUI inputUsername)

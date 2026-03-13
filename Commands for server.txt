@@ -6,6 +6,8 @@ curl.exe -X POST "http://172.104.240.193:5000/log" -H "Content-Type: application
 
 curl.exe -X POST "https://dejv-ma-velky-pero.brabec.tech/log" -H "Content-Type: application/json" -d "{\"test_https\":\"success\"}"
 
+curl.exe -X GET "https://dejv-ma-velky-pero.brabec.tech/data"
+
 
 Add command to startup -> crontab -e
 (Here it would be best to call the command with a different argument, making a seperate logs.json for each experiment)

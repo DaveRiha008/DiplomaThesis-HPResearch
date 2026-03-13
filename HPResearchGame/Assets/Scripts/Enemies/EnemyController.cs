@@ -1,6 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class EnemyController : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class EnemyController : MonoBehaviour
     const string animCorpseLeftID = "LeftTrigger";
     const string animCorpseUpID = "UpTrigger";
     const string animCorpseDownID = "DownTrigger";
+
+    public UnityEvent onDeath;
 
     [Header("Combat information")]
     [SerializeField]
@@ -236,6 +239,8 @@ public class EnemyController : MonoBehaviour
         AttackEnd();
 
         gameObject.SetActive(false);
+
+        onDeath.Invoke();
     }
 
     void TriggerCorpseAnimation()

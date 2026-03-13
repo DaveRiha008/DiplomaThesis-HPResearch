@@ -107,10 +107,11 @@ public class HUD : MonoSingleton<HUD>
 
 	void HPRegenApproachChange()
 	{
+		HideRallyIcon();
 		switch (GameManager.Instance.CurHPRegenApproach)
 		{
-			case HPRegenApproach.OverTime:
 			case HPRegenApproach.BloodBorneRally:
+			case HPRegenApproach.OverTime:
 			case HPRegenApproach.PickUp:
 				healItemDS.SetActive(false);
 				healItemBB.SetActive(false);
