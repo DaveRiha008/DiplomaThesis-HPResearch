@@ -204,6 +204,13 @@ public class PlayerController : MonoBehaviour
 		if (useHealAction.triggered)
 			UseHealItem();
 
+		//Move every frame -> idle if nothing is pressed
+		Move(moveAction.ReadValue<Vector2>());
+
+
+		//FOR TESTING
+		if (GameManager.Instance == null) return;
+
 		//Passive health regen approach
 		if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.OverTime && !IsInCombat)
 		{
@@ -214,12 +221,6 @@ public class PlayerController : MonoBehaviour
 			UpdateRally();
 		else if (isRallyActive)
 			EndRally();
-
-
-
-		//Move every frame -> idle if nothing is pressed
-		Move(moveAction.ReadValue<Vector2>());
-
 	}
 
 	#region MOVEMENT
