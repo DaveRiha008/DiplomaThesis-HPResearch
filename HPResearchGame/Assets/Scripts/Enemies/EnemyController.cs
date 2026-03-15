@@ -23,9 +23,13 @@ public class EnemyController : MonoBehaviour
     int maxHP = 3;
     public int currentHP;
     [SerializeField]
+    float attackDamage = 1f;
+    [SerializeField]
     float attackCooldown = 1f;
     [SerializeField]
     float attackDuration = .3f;
+    [SerializeField]
+    float attackRange = 1f;
     float attackStartedAt = 0f;
     float attackEndedAt = -1000f;
     bool isAttacking = false;
@@ -86,6 +90,7 @@ public class EnemyController : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         attackScript = GetComponent<AbstractEnemyAttackScript>();
+        attackScript.damage = attackDamage;
 
         //Agent setup
         agent.updateRotation = false;
@@ -111,7 +116,7 @@ public class EnemyController : MonoBehaviour
         SetAnimationMove();
 
         if (!isAttacking && 
-            (transform.position - target.position).magnitude <= minDistanceToTarget && 
+            (transform.position - target.position).magnitude <= attackRange && 
             Time.time - attackEndedAt >= attackCooldown)
         {
 			Attack();

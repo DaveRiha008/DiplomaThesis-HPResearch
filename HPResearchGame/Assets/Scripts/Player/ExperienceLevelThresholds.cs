@@ -1,15 +1,18 @@
 
 public struct ExperienceLevelThresholds
 {
-	public const int level1Threshold = 10;
-	public const int level2Threshold = 22;
-	public const int level3Threshold = 36;
-	public const int level4Threshold = 52;
-	public const int level5Threshold = 70;
-	public const int level6Threshold = 90;
-	public const int level7Threshold = 112;
-	public const int level8Threshold = 136;
-	public const int level9Threshold = 162;
+	//Orc1 = 4 Exp
+	//Orc1 = 10 Exp
+	//Orc1 = 15 Exp
+	public const int level1Threshold = 15;
+	public const int level2Threshold = 35;
+	public const int level3Threshold = 60;
+	public const int level4Threshold = 90;
+	public const int level5Threshold = 125;
+	public const int level6Threshold = 165;
+	public const int level7Threshold = 210;
+	public const int level8Threshold = 260;
+	public const int level9Threshold = 310;
 	public static readonly int[] thresholds = new int[]
 	{
 		level1Threshold,

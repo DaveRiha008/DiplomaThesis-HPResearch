@@ -43,13 +43,13 @@ public class PlayerStatsPanel : MonoBehaviour
 
 public struct PlayerStats
 {
-    public int CurHealth;
-    public int MaxHealth;
+    public float CurHealth;
+    public float MaxHealth;
     public int CurExp;
     public int GoalExp;
     public int Attack;
-    public int MoveSpeed;
-    public PlayerStats(int curHealth, int maxHealth, int curExp, int goalExp, int attack, int moveSpeed)
+    public float MoveSpeed;
+    public PlayerStats(float curHealth, float maxHealth, int curExp, int goalExp, int attack, float moveSpeed)
     {
         CurHealth = curHealth;
         MaxHealth = maxHealth;

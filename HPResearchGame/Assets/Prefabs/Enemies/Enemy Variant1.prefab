@@ -195,11 +195,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
       propertyPath: maxHP
-      value: 3
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
+      propertyPath: attackRange
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
       propertyPath: attackDuration
       value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
+      propertyPath: experienceOnDeath
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
       propertyPath: minDistanceToTarget
@@ -242,6 +250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackHitBox: {fileID: 3414244721179903208}
+  damage: 1
   attackStartPercent: 0.2
   attackEndPercent: 0.9
 --- !u!4 &7653659963195704745 stripped

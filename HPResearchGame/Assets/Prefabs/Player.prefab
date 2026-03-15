@@ -253,15 +253,15 @@ MonoBehaviour:
   rollColorChange: {r: 1, g: 1, b: 1, a: 1}
   eyeFrameColorChange: {r: 0, g: 1, b: 0, a: 1}
   attackDuration: 0.2
-  attackDamage: 5
-  maxHP: 10
+  attackDamage: 1
+  maxHP: 4
   enemiesFollowing: []
   maxHealItemCount: 3
   healthRegenPerSecond: 0.5
   usingHealItemSprite: {fileID: -8643618252241972829, guid: 9b4b19918b48e3f40a01233cee6b8120, type: 3}
-  HPPerLevel: 5
+  HPPerLevel: 1
   attackDamagePerLevel: 1
-  moveSpeedPerLevel: 1
+  moveSpeedPerLevel: 0.3
   playerSword: {fileID: 338743562356725935}
 --- !u!212 &174982480647795727
 SpriteRenderer:

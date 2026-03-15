@@ -297,16 +297,24 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
+      propertyPath: attackRange
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
+      propertyPath: attackDamage
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
       propertyPath: attackDuration
-      value: 0.8
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
       propertyPath: experienceOnDeath
-      value: 8
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6445920750700676808, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
       propertyPath: minDistanceToTarget
-      value: 1.5
+      value: 1.4
       objectReference: {fileID: 0}
     - target: {fileID: 7587864952615816407, guid: f4617266c47a15b45980d3d2eff0844c, type: 3}
       propertyPath: m_Name
@@ -353,6 +361,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackHitBox: {fileID: 7001776951884938004}
+  damage: 1
   attackIndicatorSprite: {fileID: 1324861967054224478}
   attackChargeTimePercent: 0.8
   enemySpriteR: {fileID: 1471128670432114191}

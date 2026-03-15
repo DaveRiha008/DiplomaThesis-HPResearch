@@ -8,6 +8,8 @@ public abstract class AbstractEnemyAttackScript:MonoBehaviour
 
 	protected bool attackInProgress = false;
 
+	public float damage = 1;
+
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	protected virtual void Start()
 	{
@@ -36,7 +38,7 @@ public abstract class AbstractEnemyAttackScript:MonoBehaviour
 			PlayerController player = collision.gameObject.GetComponent<PlayerController>();
 			if (player != null)
 			{
-				player.GetHit(1);
+				player.GetHit(damage);
 			}
 		}
 	}

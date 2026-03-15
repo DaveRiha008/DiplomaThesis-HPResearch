@@ -17,8 +17,8 @@ public class PlayerController : MonoBehaviour
 
 
 	[Header("Movement variables")]
-	public int moveSpeed = 10;
-	public int origMoveSpeed;
+	public float moveSpeed = 10;
+	public float origMoveSpeed;
 
 	//Small offset to avoid getting stuck in walls due to precision errors
 	[SerializeField]
@@ -116,7 +116,7 @@ public class PlayerController : MonoBehaviour
 	int attackDamagePerLevel = 1;
 	[SerializeField]
 	[Tooltip("Movement speed increase per level")]
-	int moveSpeedPerLevel = 1;
+	float moveSpeedPerLevel = 1;
 
 	Color origSpriteColor;
 
@@ -437,7 +437,7 @@ public class PlayerController : MonoBehaviour
 	}
 
 
-	public void GetHit(int damage)
+	public void GetHit(float damage)
 	{
 		if (isInvincibleInRoll)
 			return;
