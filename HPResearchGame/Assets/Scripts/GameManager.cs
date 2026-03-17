@@ -187,14 +187,14 @@ class GameManager : MonoSingleton<GameManager>
 		RespawnAllEnemies();
 		RespawnAllDestructible();
 		restartAll.Invoke();
-		ResumeGame();
+		HUD.Instance.ActivateTutorial();
 	}
 
 	public static void StartGame(TextMeshProUGUI inputUsername)
 	{
 		Instance.username = inputUsername.text;
 		Instance.gameStarted = true;
-		ResumeGame();
+		HUD.Instance.ActivateTutorial();
 	}
 
 	public static void PauseGame()

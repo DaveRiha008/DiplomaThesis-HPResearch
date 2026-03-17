@@ -47,6 +47,9 @@ public class HUD : MonoSingleton<HUD>
 	[Header("Form")]
 	[SerializeField] FormScript form;
 
+	[Header("Tutorials")]
+	[SerializeField] Tutorials tutorials;
+
 	/// <summary>
 	/// Dictionary to store the names of the controls pop-ups, so that they can be easily accessed and changed in one place if needed.
 	/// </summary>
@@ -286,6 +289,16 @@ public class HUD : MonoSingleton<HUD>
 	public void StartForm(HPShowApproach showApp, HPRegenApproach regenApp)
 	{
 		form.Activate(showApp, regenApp);
+	}
+
+	public void ActivateTutorial()
+	{
+		tutorials.ActivateTutorial();
+	}
+
+	public void DeactivateTutorial()
+	{
+		tutorials.DeactivateTutorial();
 	}
 	#endregion
 }
