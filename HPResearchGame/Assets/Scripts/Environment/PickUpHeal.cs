@@ -36,6 +36,9 @@ public class PickUpHeal : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         myCollider = GetComponent<Collider2D>();
 
+        if (GameManager.Instance.CurHPRegenApproach != HPRegenApproach.PickUp)
+            Disappear();
+
         StartTweenOfMoving();
 	}
 
