@@ -130,6 +130,7 @@ public class PlayerController : MonoBehaviour
 	Rigidbody2D rb;
 	SpriteRenderer spriteRenderer;
 	Animator animator;
+	AudioSource hurtAudioSource;
 
 	[Header("References to objects")]
 	//Cached object references
@@ -150,6 +151,7 @@ public class PlayerController : MonoBehaviour
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 		animator = gameObject.GetComponent<Animator>();
 		cameraFollow = Camera.main.GetComponent<CameraFollowPlayer>();
+		hurtAudioSource = gameObject.GetComponent<AudioSource>();
 		
 		playerSword.gameObject.SetActive(false);
 
@@ -443,13 +445,13 @@ public class PlayerController : MonoBehaviour
 			return;
 
 		currentHP -= damage;
+		hurtAudioSource.Play();
 
 		if (currentHP <= 0)
 		{
 			Die();
 			return;
 		}
-
 		//Data collection of hit
 		DataCollectionManager.AddGetHitRecord(new GetHitData() { 
 			timestamp = System.DateTime.Now, fromHP = currentHP+damage, toHP = currentHP });
