@@ -58,6 +58,11 @@ public static class DataCollectionManager
         allData.boxBreakDatas.Add(data);
     }
 
+    public static void AreaEntered(int areaIndex)
+    {
+        allData.reachedArea = Mathf.Max(areaIndex, allData.reachedArea);
+    }
+
     [Serializable]
     class DataCollectionAllData
     {
@@ -68,5 +73,6 @@ public static class DataCollectionManager
         public List<HealData> healDatas = new();
         public List<CheckpointData> checkpointDatas = new();
         public List<BoxBreakData> boxBreakDatas = new();
+        public int reachedArea = 0;
     }
 }
