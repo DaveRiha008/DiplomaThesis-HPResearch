@@ -470,6 +470,7 @@ public class PlayerController : MonoBehaviour
 	{
 		FullHeal();
 		RestoreHealItems();
+		rb.DOKill(); //Kill all tweens, because roll is a tween and it would overwrite the respawn location
 		rb.position = respawnLocation;
 		GameManager.Instance.RespawnAllEnemies();
 
@@ -762,6 +763,7 @@ public class PlayerController : MonoBehaviour
 
 	void ResetAllStats()
 	{
+		rb.DOKill();
 		attackCooldown = origAttackCooldown;
 		attackDamage = origAttackDamage;
 		attackDuration = origAttackDuration;
