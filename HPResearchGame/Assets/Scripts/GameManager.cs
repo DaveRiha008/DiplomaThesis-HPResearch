@@ -190,9 +190,9 @@ class GameManager : MonoSingleton<GameManager>
 		HUD.Instance.ActivateTutorial();
 	}
 
-	public static void StartGame(TextMeshProUGUI inputUsername)
+	public static void StartGame(string inputUsername)
 	{
-		Instance.username = inputUsername.text;
+		Instance.username = inputUsername;
 		Instance.gameStarted = true;
 		HUD.Instance.ActivateTutorial();
 	}
