@@ -287,8 +287,11 @@ public class EnemyController : MonoBehaviour
         currentHP = maxHP;
         
         //Reset timestamps
-        lastTimeTargetInAwareness = 0;
-        attackEndedAt = 0;
+        lastTimeTargetInAwareness = -10;
+        AttackEnd();
+        attackEndedAt = -10;
+
+        targetInAwareness = false;
 
         DisableCorpseOnRespawn();
 	}
