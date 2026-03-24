@@ -23,6 +23,9 @@ public class FormStarScript : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     FormScript parentForm;
     string myQuestion;
+
+    string myLowOption;
+    string myHighOption;
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
     {
@@ -41,27 +44,61 @@ public class FormStarScript : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 		AssignParentFormAndQuestion();
 
 		//Initially record all answers as empty
-		parentForm.RecordAnswer(myQuestion, "");
+		parentForm.RecordAnswer(myQuestion, "", myLowOption, myHighOption);
 
         Deselect();
 	}
 
 	void AssignParentFormAndQuestion()
     {
-		//With my index as answer -> save the answer to the form script
+        //With my index as answer -> save the answer to the form script
 
-		TextMeshProUGUI parentTMPro = transform.parent.GetComponent<TextMeshProUGUI>();
-		if (parentTMPro == null)
+        Transform myExplanationTransform = transform.parent.parent.parent.Find("Explanation");
+        if (myExplanationTransform == null) 
+        { 
+            Debug.LogError("No explanation object found under 3x parent -> won't record answer"); 
+            return; 
+        }
+		TextMeshProUGUI parentExplanation = myExplanationTransform.GetComponent<TextMeshProUGUI>();
+		if (parentExplanation == null)
 		{
-			Debug.LogError("Parent of star does not have TMPro, while it should be the question! -> won't record answer");
+			Debug.LogError("Explanation object does not have TMPro, while it should be the question! -> won't record answer");
 			return;
 		}
-		myQuestion = parentTMPro.text;
+		myQuestion = parentExplanation.text;
 
-		FormScript parentFormScript = parentTMPro.transform.parent.parent.GetComponent<FormScript>();
+		Transform myLowOptionTransform = transform.parent.parent.Find("TextLow");
+		if (myLowOptionTransform == null)
+		{
+			Debug.LogError("No TextLow object found under 2x parent -> won't record answer");
+			return;
+		}
+		TextMeshProUGUI parentLowOption = myLowOptionTransform.GetComponent<TextMeshProUGUI>();
+		if (parentLowOption == null)
+		{
+			Debug.LogError("Found TextLow object does not have TMPro, while it should be the left description! -> won't record answer");
+			return;
+		}
+		myLowOption = parentLowOption.text;
+
+		Transform myHighOptionTransform = transform.parent.parent.Find("TextHigh");
+		if (myHighOptionTransform == null)
+		{
+			Debug.LogError("No TextLow object found under 2x parent -> won't record answer");
+			return;
+		}
+		TextMeshProUGUI parentHighOption = myHighOptionTransform.GetComponent<TextMeshProUGUI>();
+		if (parentHighOption == null)
+		{
+			Debug.LogError("Found TextHigh object does not have TMPro, while it should be the left description! -> won't record answer");
+			return;
+		}
+		myHighOption = parentHighOption.text;
+
+		FormScript parentFormScript = transform.parent.parent.parent.parent.parent.GetComponent<FormScript>();
 		if (parentFormScript == null)
 		{
-			Debug.LogError("Grandparent of star does not have FormScript! -> won't record answer");
+			Debug.LogError("5xParent of star does not have FormScript! -> won't record answer");
 			return;
 		}
         parentForm = parentFormScript;
@@ -155,8 +192,8 @@ public class FormStarScript : MonoBehaviour, IPointerEnterHandler, IPointerExitH
                 previous = !previous;
 		}
 
-        //Debug.Log("Recording answer to question " + myQuestion + " with rating " + myRating);
-        parentForm.RecordAnswer(myQuestion, myRating.ToString());
+        Debug.Log($"Recording answer to question {myQuestion}: {myLowOption}_{myHighOption} with rating {myRating}");
+        parentForm.RecordAnswer(myQuestion, myRating.ToString(), myLowOption, myHighOption);
 
 	}
 

@@ -40,9 +40,12 @@ public class FormScript : MonoBehaviour
     }
 
 
-    public void RecordAnswer(string question, string rating)
+    public void RecordAnswer(string question, string rating, string lowOption = "", string highOption = "")
     {
-        questionAnswers[question] = rating;
+        if (lowOption == string.Empty && highOption == string.Empty)
+            questionAnswers[question] = rating;
+        else
+            questionAnswers[$"{question}___{lowOption}_{highOption}"] = rating;
     }
 
     public void SubmitAnswers()
