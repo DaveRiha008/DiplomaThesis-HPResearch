@@ -50,6 +50,8 @@ public class HUD : MonoSingleton<HUD>
 	[Header("Tutorials")]
 	[SerializeField] Tutorials tutorials;
 
+	[Header("BlackScreen")]
+	[SerializeField] Image blackScreen;
 	/// <summary>
 	/// Dictionary to store the names of the controls pop-ups, so that they can be easily accessed and changed in one place if needed.
 	/// </summary>
@@ -299,6 +301,13 @@ public class HUD : MonoSingleton<HUD>
 	public void DeactivateTutorial()
 	{
 		tutorials.DeactivateTutorial();
+	}
+
+	public void TweenBlink(float duration = 1f)
+	{
+		blackScreen.DOColor(blackScreen.color.WithAlpha(1), duration / 2f).SetEase(Ease.OutQuad);
+		blackScreen.DOColor(blackScreen.color.WithAlpha(0), duration / 2f).SetEase(Ease.InQuad).SetDelay(duration / 2f);
+
 	}
 	#endregion
 }

@@ -78,6 +78,7 @@ public class CampfireScript : MonoBehaviour
 
 		player.RestAtCheckpoint();
 
+
 		rested = true;
 		//UI Instruction to press F to level up
 		if (player.CanLevelUp())
@@ -85,8 +86,13 @@ public class CampfireScript : MonoBehaviour
 			HUD.Instance.ShowControlsPopUp(HUD.ControlsPopUpType.LevelUp);
 		}
 
-		GameManager.Instance.RespawnAllEnemies();
-		GameManager.Instance.RespawnAllDestructible();
+		//Blink and respawn everything in the middle of the blink
+		HUD.Instance.TweenBlink(1f);
+		this.CallWithDelay(() =>
+		{
+			GameManager.Instance.RespawnAllEnemies();
+			GameManager.Instance.RespawnAllDestructible();
+		}, .5f);
 	}
 
 	void LevelUp()
