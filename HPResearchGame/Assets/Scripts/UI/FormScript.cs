@@ -48,6 +48,10 @@ public class FormScript : MonoBehaviour
             questionAnswers[$"{question}___{lowOption}_{highOption}"] = rating;
     }
 
+    public void RecordCheckboxAnswer(string question, bool answer)
+    {
+        questionAnswers[question] = answer.ToString();
+    }
     public void SubmitAnswers()
     {
         GameManager.Instance.FormFilled(questionAnswers);
