@@ -21,7 +21,8 @@ public class EnemyController : MonoBehaviour
     [Header("Combat information")]
     [SerializeField]
     int maxHP = 3;
-    public int currentHP;
+    public int MaxHP => maxHP;
+	public int currentHP;
     [SerializeField]
     float attackDamage = 1f;
     [SerializeField]

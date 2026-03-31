@@ -657,6 +657,14 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 1319038072}
+    - target: {fileID: 3871891655336292037, guid: 1e5c8aeb73655d542bd3d52666a6f891, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3871891655336292037, guid: 1e5c8aeb73655d542bd3d52666a6f891, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7653659963195704745, guid: 1e5c8aeb73655d542bd3d52666a6f891, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3
@@ -1639,6 +1647,14 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 1319038072}
+    - target: {fileID: 3871891655336292037, guid: 893127c610ddff4489f3c477883dba09, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3871891655336292037, guid: 893127c610ddff4489f3c477883dba09, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7653659963195704745, guid: 893127c610ddff4489f3c477883dba09, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1
@@ -5311,6 +5327,14 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 1319038072}
+    - target: {fileID: 3871891655336292037, guid: 189dba946e4db0246bd15c4406a42846, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3871891655336292037, guid: 189dba946e4db0246bd15c4406a42846, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7653659963195704745, guid: 189dba946e4db0246bd15c4406a42846, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.444
@@ -5506,10 +5530,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4500107564055130401, guid: e07b03374215fa24e998fd962a4ca7a1, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 985950119}
     - target: {fileID: 4523904492051274209, guid: e07b03374215fa24e998fd962a4ca7a1, type: 3}
       propertyPath: m_Name
       value: StartMenu
