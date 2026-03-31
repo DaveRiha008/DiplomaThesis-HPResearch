@@ -108,6 +108,7 @@ public class PlayerController : MonoBehaviour
 
 	[Header("Leveling variables")]
 	int experiencePoints = 0;
+	int lastCheckpointExp = 0;
 	int currentLevel = 0;
 	[SerializeField]
 	[Tooltip("Max HP increase per level")]
@@ -479,6 +480,9 @@ public class PlayerController : MonoBehaviour
 		rb.position = respawnLocation;
 		GameManager.Instance.RespawnAllEnemies();
 
+		experiencePoints = lastCheckpointExp;
+		HUD.Instance.UpdateXPBar(experiencePoints / (float)ExperienceLevelThresholds.thresholds[currentLevel]);
+
 		spriteRenderer.color = spriteRenderer.color.WithAlpha(0);
 		spriteRenderer.DOColor(origSpriteColor.WithAlpha(1), .8f);
 
@@ -636,6 +640,8 @@ public class PlayerController : MonoBehaviour
 
 	public void RestAtCheckpoint()
 	{
+		lastCheckpointExp = experiencePoints;
+
 		FullHeal();
 
 		if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.DarkSoulsItems)
