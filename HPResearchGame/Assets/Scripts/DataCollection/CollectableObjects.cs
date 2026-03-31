@@ -57,6 +57,8 @@ public struct GameTimeData: CollectableObject
 [Serializable]
 public struct HealData: CollectableObject
 {
+	public float fromHP;
+	public float toHP;
 	public DateTime timestamp;
 }
 

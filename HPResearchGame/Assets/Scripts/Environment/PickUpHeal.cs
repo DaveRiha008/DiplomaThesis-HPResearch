@@ -80,9 +80,9 @@ public class PickUpHeal : MonoBehaviour
                 Debug.LogError("Object tagged Player does not have PlayerController component.");
                 return;
 			}
-
-            player.Heal(HealAmount);
-            DataCollectionManager.AddHealRecord(new() { timestamp = System.DateTime.Now });
+            float hpBeforeHeal = player.CurHP;
+			player.Heal(HealAmount);
+            DataCollectionManager.AddHealRecord(new() {fromHP = hpBeforeHeal, toHP = player.CurHP, timestamp = System.DateTime.Now });
             Disappear();
         }
 	}

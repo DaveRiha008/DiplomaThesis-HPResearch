@@ -80,6 +80,7 @@ public class PlayerController : MonoBehaviour
 	float maxHP = 10;
 	float origMaxHP;
 	float currentHP;
+	public float CurHP { get => currentHP; }
 
 	Vector3 respawnLocation;
 	Vector3 origRespawnLocation;
@@ -414,8 +415,10 @@ public class PlayerController : MonoBehaviour
 
 		if (isRallyActive)
 		{
-			DataCollectionManager.AddHealRecord(new() { timestamp = System.DateTime.Now });
+			float hpBeforeHeal = currentHP;
 			Heal(rallyHealAmount);
+			DataCollectionManager.AddHealRecord(new() 
+			{ fromHP = hpBeforeHeal, toHP = currentHP, timestamp = System.DateTime.Now });
 		}
 
 		//If the enemy was killed, add experience and possibly get heal item if that is the current approach
@@ -665,13 +668,17 @@ public class PlayerController : MonoBehaviour
 		if (currentHealItemCount <= 0)
 			return;
 		currentHealItemCount--;
+
+		float hpBeforeHeal = currentHP;
+
 		HUD.Instance.RemoveHealItem();
 		Heal(healAmountFromHealItem);
 
 		isUsingHealItem = true;
 		TweenUseHealItem();
 
-		DataCollectionManager.AddHealRecord(new() { timestamp = System.DateTime.Now });
+		DataCollectionManager.AddHealRecord(new() 
+		{ fromHP = hpBeforeHeal, toHP = currentHP, timestamp = System.DateTime.Now });
 	}
 
 	void TweenUseHealItem()
