@@ -50,6 +50,9 @@ public class HUD : MonoSingleton<HUD>
 	[Header("Tutorials")]
 	[SerializeField] Tutorials tutorials;
 
+	[Header("Final Screen")]
+	[SerializeField] GameObject finalScreen;
+
 	[Header("BlackScreen")]
 	[SerializeField] Image blackScreen;
 	/// <summary>
@@ -308,6 +311,11 @@ public class HUD : MonoSingleton<HUD>
 		blackScreen.DOColor(blackScreen.color.WithAlpha(1), duration / 2f).SetEase(Ease.OutQuad);
 		blackScreen.DOColor(blackScreen.color.WithAlpha(0), duration / 2f).SetEase(Ease.InQuad).SetDelay(duration / 2f);
 
+	}
+
+	public void ShowFinalScreen()
+	{
+		finalScreen.SetActive(true);
 	}
 	#endregion
 }

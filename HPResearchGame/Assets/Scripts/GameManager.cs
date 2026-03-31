@@ -159,7 +159,11 @@ class GameManager : MonoSingleton<GameManager>
 		gameTimeApproach = 0f;
 		CurHPRegenApproach = GetRandomRegenApproach();
 		CurHPShowApproach = GetRandomShowApproach();
-		RestartGame();
+
+		if (NumOfCompletedApproaches >= 3)
+			HUD.Instance.ShowFinalScreen();
+		else
+			RestartGame();
 	}
 
 	void SendEndOfApproachData(Dictionary<string, string> formAnswersJson)
