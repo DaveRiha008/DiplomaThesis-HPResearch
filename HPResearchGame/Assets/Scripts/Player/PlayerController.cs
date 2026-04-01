@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour
 	int healAmountFromHealItem = 5;
 	float healItemUseDuration = 0.5f;
 	bool isUsingHealItem = false;
-	float rallyDuration = .5f;
+	float rallyDuration = .9f;
 	float rallyStarted = 0f;
 	bool isRallyActive = false;
 	float rallyHealAmount = 1f;
@@ -461,7 +461,7 @@ public class PlayerController : MonoBehaviour
 			timestamp = System.DateTime.Now, fromHP = currentHP+damage, toHP = currentHP });
 
 		if (GameManager.Instance.CurHPRegenApproach == HPRegenApproach.BloodBorneRally)
-			StartRally();
+			StartRally(damage*.75f);
 
 		HUD.Instance.UpdateHealthBar(currentHP, maxHP);
 
@@ -720,11 +720,12 @@ public class PlayerController : MonoBehaviour
 		HUD.Instance.UpdateHealItemCount(maxHealItemCount);
 	}
 
-	void StartRally()
+	void StartRally(float healAmount)
 	{
 		rallyStarted = Time.time;
 		HUD.Instance.ShowRallyIcon();
 		isRallyActive = true;
+		rallyHealAmount = healAmount;
 	}
 
 	void UpdateRally()
