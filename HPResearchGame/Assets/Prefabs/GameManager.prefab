@@ -64,7 +64,7 @@ MonoBehaviour:
   gameStarted: 0
   gameTimeApproach: 0
   gameTimeOverall: 0
-  gameTimeLimitSeconds: 300
+  gameTimeLimitSeconds: 420
 --- !u!82 &596989741157167618
 AudioSource:
   m_ObjectHideFlags: 0
