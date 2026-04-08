@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 864062329958948412}
   - component: {fileID: 2001184744266812574}
   - component: {fileID: 8560419132083575043}
+  - component: {fileID: 3355497048906850723}
   m_Layer: 0
   m_Name: Crate
   m_TagString: DestructibleObject
@@ -171,3 +172,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chanceToDropHealItem: 0.3
+--- !u!114 &3355497048906850723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 915742253670460870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
