@@ -72,11 +72,11 @@ class GameManager : MonoSingleton<GameManager>
 	private void Update()
 	{
 		//TODO: Remove this debug code and implement a proper changing of approaches based on randomness and after a form is filled
-		if (Input.GetKeyDown(KeyCode.L))
-		{
-			ChangeHPRegenApproach((HPRegenApproach)((int)(CurHPRegenApproach + 1) % System.Enum.GetValues(typeof(HPRegenApproach)).Length));
-			ChangeHPShowApproach((HPShowApproach)((int)(CurHPShowApproach + 1) % System.Enum.GetValues(typeof(HPShowApproach)).Length));
-		}
+		//if (Input.GetKeyDown(KeyCode.L))
+		//{
+		//	ChangeHPRegenApproach((HPRegenApproach)((int)(CurHPRegenApproach + 1) % System.Enum.GetValues(typeof(HPRegenApproach)).Length));
+		//	ChangeHPShowApproach((HPShowApproach)((int)(CurHPShowApproach + 1) % System.Enum.GetValues(typeof(HPShowApproach)).Length));
+		//}
 
 		if (menuAction.WasPressedThisFrame() && gameStarted)
 			ToggleMenu();
