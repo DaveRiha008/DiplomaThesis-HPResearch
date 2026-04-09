@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class HUD : MonoSingleton<HUD>
 {
 
-	int maxHealthThreshold = 50;
+	int maxHealthThreshold = 10;
 
 	[Header("References")]
 	[Header("HP")]
